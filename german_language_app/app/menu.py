@@ -27,7 +27,7 @@ def input_sentence():
 def view_vocabulary():
     print("not implemented")
 
-def main():
+def menu():
     while True:
         print("\nGerman Language Learning App")
         print("1. Input a sentence")
