@@ -6,3 +6,6 @@ class Sentence(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     text = Column(String, index=True)
+
+    def __init__(self, text: str):
+        self.text = text

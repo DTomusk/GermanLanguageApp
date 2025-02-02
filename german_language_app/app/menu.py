@@ -1,4 +1,6 @@
 import spacy
+from data_access import add_sentence, get_sentences
+from database import SessionLocal
 
 # Need to clean up and spell-check user input 
 def lemmatize_german_text(text):
@@ -13,9 +15,12 @@ def lemmatize_german_text(text):
     
     return lemmas
 
-def input_sentence():
+def input_sentence(db):
     # User input
     text = input("Enter a German sentence: ")
+
+    add_sentence(db, text)
+
     lemmas = lemmatize_german_text(text)
 
     # Display results
@@ -24,23 +29,34 @@ def input_sentence():
     for word, lemma in lemmas.items():
         print(f"{word} → {lemma}")
 
+# show all the sentences in the database 
+def view_sentences(db):
+    sentences = get_sentences(db)
+    for sentence in sentences:
+        print(f"\n{sentence.text}")
+
+# show all the vocabulary that's been saved
 def view_vocabulary():
     print("not implemented")
 
 def menu():
+    db = SessionLocal()
     while True:
         print("\nGerman Language Learning App")
         print("1. Input a sentence")
-        print("2. View Vocabulary")
-        print("3. Exit")
+        print("2. View Sentences")
+        print("3. View Vocabulary")
+        print("4. Exit")
         
         choice = input("Please choose an option (1, 2, 3): ")
         
         if choice == "1":
-            input_sentence()
+            input_sentence(db)
         elif choice == "2":
-            view_vocabulary()
+            view_sentences(db)
         elif choice == "3":
+            view_vocabulary()
+        elif choice == "4":
             print("Exiting the application. Goodbye!")
             break
         else:
