@@ -19,6 +19,17 @@ class Service:
         return lemmas
 
     def process_sentence(self, text: str):
+        # These first two steps will likely be done client-side 
+        # Use regex to determine if there are any invalid characters
+        # Use regex to determine if there is only one sentence 
+        # Use spell checking to determine if there are any errors and suggest corrections
+        # Process sentence using nlp 
+        # Determine the type of sentence (statement, command, question etc.)
+        # Determine the vocabulary 
+        # Check grammatical correctness 
+        # Determine complexity 
+
+
         sentence = Sentence(text=text)
         self.db.add(sentence)
         self.db.commit()
