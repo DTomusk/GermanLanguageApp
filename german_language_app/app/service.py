@@ -18,7 +18,7 @@ class Service:
         
         return lemmas
 
-    def input_sentence(self, text: str):
+    def process_sentence(self, text: str):
         sentence = Sentence(text=text)
         self.db.add(sentence)
         self.db.commit()
