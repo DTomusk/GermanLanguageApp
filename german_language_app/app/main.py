@@ -1,13 +1,22 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends
 from pydantic import BaseModel
-from dependencies import get_service
-from service import Service
+from app.dependencies import get_service
+from app.service import Service
+from app.database import Base, engine
 
 # put this in a different file
 class TextInput(BaseModel):
     text: str
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+
+    yield
+
+    # add any cleanup afterwards
+
+app = FastAPI(lifespan=lifespan)
 
 @app.post("/sentences")
 def input_sentence(input_text: TextInput, service: Service=Depends(get_service)):

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from models import Sentence, Vocabulary
-from setup import nlp
+from app.models import Sentence, Vocabulary
+from app.nlp_utils import nlp
 
 # Service shouldn't call db directly, data_access should 
 class Service:
