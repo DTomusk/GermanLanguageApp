@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Sentence, Vocabulary
+from app.models import Sentence, Vocabulary
 
 # Add a sentence to the db 
 def add_sentence(db: Session, text: str):
