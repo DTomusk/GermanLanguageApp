@@ -3,6 +3,7 @@ import axios from "axios";
 
 // the view sentences component is essentially identical to view vocabulary
 function ViewSentences() {
+    // define models somewhere
     const [data, setData] = useState<{id: number, text: string}[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
@@ -30,7 +31,7 @@ function ViewSentences() {
                 {isLoading ? "Loading..." : "Get Sentences"}
             </button>
 
-            {error && <p className="text-red-500 mt-2">{error}</p>}
+            {error && <p>{error}</p>}
 
             {data && (
                 <table>

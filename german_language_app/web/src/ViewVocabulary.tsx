@@ -29,7 +29,7 @@ function ViewVocabulary() {
                 {isLoading ? "Loading..." : "Get Vocabulary"}
             </button>
 
-            {error && <p className="text-red-500 mt-2">{error}</p>}
+            {error && <p>{error}</p>}
 
             {data && (
                 <div>
