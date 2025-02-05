@@ -5,7 +5,7 @@ function SentenceInput() {
     const [text, setText] = useState("");
     const [response, setResponse] = useState("");
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
 
         if (text.trim() === "") {
@@ -14,8 +14,12 @@ function SentenceInput() {
         }
 
         try {
-            const res = await axios.post("http://127.0.0.1:8000/sentences", {
-                text: text
+            const res = await axios.post("http://127.0.0.1:8000/sentences", 
+            { text: text },
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
             });
             setResponse(res.data.message);
         } catch (error) {
@@ -24,13 +28,18 @@ function SentenceInput() {
         }
     };
 
+    const handleChange = async (e) => {
+        setText(e.target.value);
+        setResponse("");
+    }
+
     return (
         <div>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
                     value={text}
-                    onChange={(e) => setText(e.target.value)}
+                    onChange={handleChange}
                     placeholder="Type your sentence"
                 />
                 <button type="submit">
