@@ -4,6 +4,9 @@ import axios from "axios";
 function SentenceInput() {
     const [text, setText] = useState("");
     const [response, setResponse] = useState("");
+    const [isValid, setIsValid] = useState(true);
+
+    const regexPattern = /^[a-zA-Z0-9\/.,;:\-!?'" ]*$/;
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
@@ -28,8 +31,10 @@ function SentenceInput() {
         }
     };
 
-    const handleChange = async (e) => {
-        setText(e.target.value);
+    const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setText(value);
+        setIsValid(regexPattern.test(value));
         setResponse("");
     }
 
@@ -42,7 +47,10 @@ function SentenceInput() {
                     onChange={handleChange}
                     placeholder="Type your sentence"
                 />
-                <button type="submit">
+                {!isValid && <p className="text-red-500 mt-2">Invalid input format</p>}
+                <button 
+                    type="submit"
+                    disabled={!isValid}>
                     Submit
                 </button>
             </form>

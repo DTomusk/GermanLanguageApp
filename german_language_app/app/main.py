@@ -43,7 +43,9 @@ async def general_exception_handler(request: Request, exc: Exception):
 @app.post("/sentences")
 def input_sentence(input_text: TextInput, service: Service=Depends(get_service)):
     service.input_sentence(input_text.text)
-    return input_text.text
+    return JSONResponse(
+        content={"message": input_text.text}
+    )
 
 # show all the sentences in the database 
 @app.get("/sentences")
