@@ -1,22 +1,11 @@
 from sqlalchemy.orm import Session
-from app.models import Sentence, Vocabulary
 from app.nlp_utils import nlp
+from app.data_access import add_sentence, get_sentences, get_vocabulary_entry, get_vocabulary, add_vocabulary, increment_vocabulary
 
 # Service shouldn't call db directly, data_access should 
 class Service:
     def __init__(self, db: Session):
         self.db = db
-
-    # Need to clean up and spell-check user input 
-    # need to put in service class 
-    def lemmatize_german_text(self, text: str):    
-        # Process text
-        doc = nlp(text)
-        
-        # Extract original words and their lemmas
-        lemmas = {token.text: (token.lemma_, token.pos_) for token in doc if token.is_alpha}  # Ignore punctuation
-        
-        return lemmas
 
     def process_sentence(self, text: str):
         # These first two steps will likely be done client-side 
@@ -28,29 +17,36 @@ class Service:
         # Determine the vocabulary 
         # Check grammatical correctness 
         # Determine complexity 
-
-
-        sentence = Sentence(text=text)
-        self.db.add(sentence)
-        self.db.commit()
+        add_sentence(self.db, text=text)
 
         lemmas = self.lemmatize_german_text(text)
 
+        self.update_vocabulary(lemmas) 
+
+    # Need to clean up and spell-check user input 
+    # need to put in service class 
+    def lemmatize_german_text(self, text: str):    
+        # Process text
+        doc = nlp(text)
+        
+        # Extract original words and their lemmas
+        lemmas = {token.text: (token.lemma_, token.pos_) for token in doc if token.is_alpha}  # Ignore punctuation
+        
+        return lemmas
+    
+    def update_vocabulary(self, lemmas: dict[str, tuple[str, str]]):
         for _, entry in lemmas.items():
             # fix the structure of lemma here to be more readable
             lemma, pos = entry
-            vocab_entry = self.db.query(Vocabulary).filter(Vocabulary.lemma == lemma, Vocabulary.pos == pos).first()
+            vocab_entry = get_vocabulary_entry(db=self.db, lemma=lemma, pos=pos)
             if vocab_entry is None:
-                vocabulary_entry = Vocabulary(lemma=lemma, pos=pos)
-                self.db.add(vocabulary_entry)
-                self.db.commit()
+                add_vocabulary(db=self.db, lemma=lemma, pos=pos)
             else:
-                vocab_entry = self.db.query(Vocabulary).filter(Vocabulary.lemma == lemma, Vocabulary.pos == pos).first()
-                vocab_entry.frequency += 1
-                self.db.commit()
+                increment_vocabulary(db=self.db, lemma=lemma, pos=pos) 
 
+    # depending on what we want, we may not need these 
     def get_sentences(self):
-        return self.db.query(Sentence).all()
+        return get_sentences(db=self.db)
 
     def get_vocabulary(self):
-        return self.db.query(Vocabulary).all()
+        return get_vocabulary(db=self.db)
