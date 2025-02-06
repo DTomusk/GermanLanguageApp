@@ -8,6 +8,7 @@ class Service:
         self.db = db
 
     def process_sentence(self, text: str):
+        text = text.strip()
         # These first two steps will likely be done client-side 
         # Use regex to determine if there are any invalid characters
         # Use regex to determine if there is only one sentence 

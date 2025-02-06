@@ -1,24 +1,12 @@
-from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 from app.dependencies import get_service
 from app.service import Service
+from models import SentenceInput
 import logging
 
-# put this in a different file
-class TextInput(BaseModel):
-    text: str
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-
-    yield
-
-    # add any cleanup afterwards
-
-app = FastAPI(lifespan=lifespan)
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,7 +29,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 
 # post a sentence to the database which gets stored and analysed 
 @app.post("/sentences")
-def input_sentence(input_text: TextInput, service: Service=Depends(get_service)):
+def input_sentence(input_text: SentenceInput, service: Service=Depends(get_service)):
     service.input_sentence(input_text.text)
     return JSONResponse(
         content={"message": input_text.text}
