@@ -3,7 +3,6 @@ from fastapi import FastAPI, Depends
 from pydantic import BaseModel
 from app.dependencies import get_service
 from app.service import Service
-from app.database import Base, engine
 
 # put this in a different file
 class TextInput(BaseModel):
