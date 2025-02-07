@@ -1,9 +1,7 @@
-from fastapi import FastAPI, Depends, Request
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from app.dependencies import get_service
-from app.service import Service
-from models import SentenceInput
+from app.routes import router
 import logging
 
 app = FastAPI()
@@ -16,6 +14,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(router)
+
 logging.basicConfig(level=logging.ERROR)
 
 # general case exception handler, improve as we go on 
@@ -26,21 +26,3 @@ async def general_exception_handler(request: Request, exc: Exception):
         status_code=500,
         content={"error": "Internal Server Error", "details": str(exc)},
     )
-
-# post a sentence to the database which gets stored and analysed 
-@app.post("/sentences")
-def input_sentence(input_text: SentenceInput, service: Service=Depends(get_service)):
-    service.input_sentence(input_text.text)
-    return JSONResponse(
-        content={"message": input_text.text}
-    )
-
-# show all the sentences in the database 
-@app.get("/sentences")
-def view_sentences(service: Service=Depends(get_service)):
-    return service.get_sentences()
-
-# show all the vocabulary that's been saved
-@app.get("/vocabulary")
-def view_vocabulary(service: Service=Depends(get_service)):
-    return service.get_vocabulary()

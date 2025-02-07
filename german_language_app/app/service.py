@@ -7,14 +7,12 @@ class Service:
     def __init__(self, db: Session):
         self.db = db
 
-    def process_sentence(self, text: str):
-        text = text.strip()
-        # These first two steps will likely be done client-side 
-        # Use regex to determine if there are any invalid characters
-        # Use regex to determine if there is only one sentence 
+    def process_sentence(self, text: str) -> str:
+        # These first two steps will likely be done client-side  
         # Use spell checking to determine if there are any errors and suggest corrections
         # Process sentence using nlp 
         # Determine the type of sentence (statement, command, question etc.)
+
         # Determine the vocabulary 
         # Check grammatical correctness 
         # Determine complexity 
@@ -23,6 +21,8 @@ class Service:
         lemmas = self.lemmatize_german_text(text)
 
         self.update_vocabulary(lemmas) 
+
+        return text
 
     # Need to clean up and spell-check user input 
     # need to put in service class 
