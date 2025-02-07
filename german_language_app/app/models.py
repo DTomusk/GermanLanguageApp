@@ -1,5 +1,14 @@
+from typing import Annotated
+from pydantic import BaseModel, StringConstraints
 from sqlalchemy import Column, Integer, String, UniqueConstraint
 from app.database import Base
+
+class SentenceInput(BaseModel):
+    text: Annotated[str, StringConstraints(
+        strip_whitespace=True, 
+        min_length=1,
+        pattern=r'^[A-Za-z0-9\/,\- äöüÄÖÜß]+[.!?]?$'
+        )]
 
 # Table to store all text entered
 class Sentence(Base):

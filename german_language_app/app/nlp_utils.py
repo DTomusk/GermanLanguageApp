@@ -1,3 +1,4 @@
-import spacy 
+import stanza 
 
-nlp = spacy.load("de_core_news_md")
+stanza.download('de', processors='tokenize,pos,lemma')
+nlp = stanza.Pipeline('de', processors='tokenize,pos,lemma', download_method=None)
