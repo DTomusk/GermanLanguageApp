@@ -9,9 +9,9 @@ router = APIRouter()
 # post a sentence to the database which gets stored and analysed 
 @router.post("/sentences")
 def input_sentence(input_text: SentenceInput, service: Service=Depends(get_service)):
-    corrected_text = service.process_sentence(input_text.text)
+    doc = service.process_sentence(input_text.text)
     return JSONResponse(
-        content={"message": corrected_text}
+        content={"message": doc}
     )
 
 # show all the sentences in the database 

@@ -7,7 +7,7 @@ class SentenceInput(BaseModel):
     text: Annotated[str, StringConstraints(
         strip_whitespace=True, 
         min_length=1,
-        pattern=r'^[A-Za-z0-9 äöüÄÖÜß]+[.!?]?$'
+        pattern=r'^[A-Za-z0-9\/,\- äöüÄÖÜß]+[.!?]?$'
         )]
 
 # Table to store all text entered

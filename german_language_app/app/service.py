@@ -1,3 +1,4 @@
+import json
 from sqlalchemy.orm import Session
 from app.nlp_utils import nlp
 from app.data_access import add_sentence, get_sentences, get_vocabulary_entry, get_vocabulary, add_vocabulary, increment_vocabulary
@@ -18,32 +19,36 @@ class Service:
         # Determine complexity 
         add_sentence(self.db, text=text)
 
-        lemmas = self.lemmatize_german_text(text)
-
-        self.update_vocabulary(lemmas) 
-
-        return text
-
-    # Need to clean up and spell-check user input 
-    # need to put in service class 
-    def lemmatize_german_text(self, text: str):    
-        # Process text
         doc = nlp(text)
-        
-        # Extract original words and their lemmas
-        lemmas = {token.text: (token.lemma_, token.pos_) for token in doc if token.is_alpha}  # Ignore punctuation
-        
-        return lemmas
+
+        for sentence in doc.sentences:
+            for word in sentence.words:
+                self.update_vocabulary(word.lemma, word.pos)
+
+        return self.convert_doc_to_json(doc)
     
-    def update_vocabulary(self, lemmas: dict[str, tuple[str, str]]):
-        for _, entry in lemmas.items():
-            # fix the structure of lemma here to be more readable
-            lemma, pos = entry
-            vocab_entry = get_vocabulary_entry(db=self.db, lemma=lemma, pos=pos)
-            if vocab_entry is None:
-                add_vocabulary(db=self.db, lemma=lemma, pos=pos)
-            else:
-                increment_vocabulary(db=self.db, lemma=lemma, pos=pos) 
+    def convert_doc_to_json(self, doc):
+        return json.dumps([
+            {
+                "text": sentence.text,
+                "words": [
+                    {
+                        "text": word.text,
+                        "lemma": word.lemma,
+                        "pos": word.pos
+                    }
+                    for word in sentence.words
+                ]
+            }
+            for sentence in doc.sentences
+        ])
+    
+    def update_vocabulary(self, lemma, pos):
+        vocab_entry = get_vocabulary_entry(db=self.db, lemma=lemma, pos=pos)
+        if vocab_entry is None:
+            add_vocabulary(db=self.db, lemma=lemma, pos=pos)
+        else:
+            increment_vocabulary(db=self.db, lemma=lemma, pos=pos) 
 
     # depending on what we want, we may not need these 
     def get_sentences(self):
