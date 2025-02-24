@@ -65,6 +65,6 @@ def add_sentence_to_flashcard(db, card_id: int, sentence: str):
         for word in doc_sentence.words:
             if word.text == card.word:
                 sentence = data_access.add_sentence(db=db, text=sentence)
-                data_access.add_sentence_to_flashcard(db=db, card_id=card_id, sentence_id=sentence.id)
+                data_access.add_sentence_to_flashcard(db=db, card=card, sentence=sentence)
                 return "Sentence added to flashcard"
         raise Exception("Sentence does not contain the word on the flashcard")

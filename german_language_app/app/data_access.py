@@ -44,9 +44,8 @@ def add_flashcard(db: Session, word: str):
     db.add(flashcard)
     db.commit()
 
-def add_sentence_to_flashcard(db: Session, card_id: int, sentence_id: int):
-    query = text(f"SELECT * FROM flashcard_sentences WHERE flashcard_id = {card_id} AND sentence_id = {sentence_id}")
-    db.execute(query)
+def add_sentence_to_flashcard(db: Session, card: Flashcard, sentence: Sentence):
+    card.sentences.append(sentence)
     db.commit()
 
 def get_flashcard_sentences(db: Session, card_id: int):
