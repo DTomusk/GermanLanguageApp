@@ -1,9 +1,8 @@
 from app.database import SessionLocal
-from app.service import Service
 
-def get_service():
+def get_db():
     db = SessionLocal()
     try:
-        yield Service(db)
+        yield db
     finally:
         db.close()
