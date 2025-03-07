@@ -6,7 +6,7 @@ function SentenceInput() {
     const [response, setResponse] = useState("");
     const [isValid, setIsValid] = useState(true);
 
-    const regexPattern = /^[a-zA-Z0-9\/.,;:\-!?'" ]*$/;
+    const regexPattern = /^[a-zA-Z0-9\/.,;:\-!?'" öäüßÖÄÜ]*$/;
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
