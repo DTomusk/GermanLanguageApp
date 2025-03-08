@@ -1,5 +1,9 @@
 import { styled } from "styled-components";
 
+interface CardHeaderProps {
+    title: string;
+}
+
 const StyledHeader = styled.div`
     font-size: 20px;
     font-weight: bold;
@@ -8,9 +12,9 @@ const StyledHeader = styled.div`
     color: white;
     text-align: center;`;
 
-function CardHeader() {
+const CardHeader: React.FC<CardHeaderProps> = ({title}) => {
     return (<>
-        <StyledHeader>I'm the header</StyledHeader>
+        <StyledHeader>{title}</StyledHeader>
     </>)
 }
 

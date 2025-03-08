@@ -1,9 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { useState } from "react";
 
 const StyledInput = styled.input`
-    width: 100%;
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -15,8 +13,8 @@ interface InputProps {
     placeholder: string;
 }
 
-const Input: React.FC<InputProps> = (props) => {
-    return <StyledInput {...props} />;
+const Input: React.FC<InputProps> = ({ value, onChange, placeholder}) => {
+    return <StyledInput value={value} onChange={onChange} placeholder={placeholder} />;
 }
 
 export default Input;

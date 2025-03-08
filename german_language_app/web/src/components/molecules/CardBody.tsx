@@ -1,11 +1,15 @@
 import { styled } from "styled-components";
 
+interface CardBodyProps {
+    children: React.ReactNode;
+}
+
 const StyledBody = styled.div`
     margin: 10px;`;
 
-function CardBody() {
+const CardBody: React.FC<CardBodyProps> = ({children}) => {
     return (<StyledBody>
-        <div>I'm the body</div>
+        {children}
     </StyledBody>)
 }
 

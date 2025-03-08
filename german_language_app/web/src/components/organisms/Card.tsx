@@ -2,6 +2,13 @@ import { styled } from "styled-components";
 import CardBody from "../molecules/CardBody"
 import CardFooter from "../molecules/CardFooter"
 import CardHeader from "../molecules/CardHeader"
+import React from "react";
+
+interface CardProps {
+    cardTitle: string;
+    body: React.ReactNode;
+    footer: React.ReactNode;
+}
 
 const StyledCard = styled.div`
     width: 100%;
@@ -10,11 +17,15 @@ const StyledCard = styled.div`
     border-radius: 5px;
     overflow: hidden;`;
 
-function Card () {
+const Card: React.FC<CardProps> = ({cardTitle, body, footer}) => {
     return (<StyledCard>
-        <CardHeader></CardHeader>
-        <CardBody></CardBody>
-        <CardFooter></CardFooter>
+        <CardHeader title={cardTitle}></CardHeader>
+        <CardBody>
+            {body}
+        </CardBody>
+        <CardFooter>
+            {footer}
+        </CardFooter>
     </StyledCard>)
 }
 

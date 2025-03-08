@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 interface ButtonProps {
     label: string; 
-    onClick: () => void;
+    onClick: (e: { preventDefault: () => void; }) => void;
     disabled?: boolean;
 }
 
