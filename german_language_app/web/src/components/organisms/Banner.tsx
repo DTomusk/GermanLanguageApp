@@ -7,7 +7,7 @@ import { theme } from "../../theme";
 const StyledBanner = styled.div<{ 
         color: string, 
         bgcolor: string, 
-        borderColor: string     
+        bordercolor: string     
     }>`
     display: flex;
     align-items: center;
@@ -16,7 +16,7 @@ const StyledBanner = styled.div<{
     overflow: hidden;
     border-radius: 5px;
     background-color: ${props => props.bgcolor};
-    border: 1px solid ${props => props.borderColor}; 
+    border: 1px solid ${props => props.bordercolor}; 
     color: ${props => props.color};
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 `;
@@ -28,7 +28,7 @@ interface BannerProps {
 }
 
 const Banner: FC<BannerProps> = ({type, message, onClose}) => {
-    return <StyledBanner color={theme[type].text} bgcolor={theme[type].background} borderColor={theme[type].borderColor}>
+    return <StyledBanner color={theme[type].text} bgcolor={theme[type].background} bordercolor={theme[type].borderColor}>
         <Icon type={type} />
         {message}
         <CloseButton onClick={onClose} />

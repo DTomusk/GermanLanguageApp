@@ -5,6 +5,7 @@ import { ChangeEvent, useState } from "react";
 import FormField from "../molecules/FormField";
 import axios from "axios";
 import Banner from "../organisms/Banner";
+import { Link } from "react-router-dom";
 
 // This should be in a template file 
 const ContentWrapper = styled.div`
@@ -78,7 +79,9 @@ function LandingPage() {
                 body={<FormField label="Word:" value={word} onChange={handleInputChange} error={error}></FormField>}
                 footer={<Button label="Create Flashcard" onClick={handleSubmit} disabled={loading || submitted}></Button>}>
             </Card>
-            <Button label="Click me!" onClick={()=>{}}></Button>
+            <Link to="/practise">
+                <Button label="Practise" onClick={()=>{}}></Button>
+            </Link>
         </ContentWrapper>
     )
 }
