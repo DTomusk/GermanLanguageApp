@@ -1,4 +1,4 @@
-import React from "react";
+import { FC, ReactNode } from "react";
 import styled from "styled-components";
 
 const StyledLabel = styled.label`
@@ -7,10 +7,10 @@ const StyledLabel = styled.label`
 `;
 
 interface LabelProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
-const Label: React.FC<LabelProps> = ({children}) => {
+const Label: FC<LabelProps> = ({children}) => {
     return <StyledLabel>{children}</StyledLabel>;
 };
 

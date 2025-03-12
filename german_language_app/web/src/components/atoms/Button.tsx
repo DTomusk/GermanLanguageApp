@@ -15,7 +15,13 @@ const StyledButton = styled.button`
     border: none;
     cursor: pointer;
     &:hover {
-        background-color: ${({ theme }) => theme.colors.primaryLight };`;
+        background-color: ${({ theme }) => theme.colors.primaryLight };
+    }
+    &:disabled {
+        background-color: ${({ theme }) => theme.colors.grey };
+        cursor: not-allowed;
+    }
+        `;
 
 const Button: React.FC<ButtonProps> = ({ label, onClick, disabled = false }) => {
     return <StyledButton onClick={onClick} disabled={disabled}>{label}</StyledButton>
