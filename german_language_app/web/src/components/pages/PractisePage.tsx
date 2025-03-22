@@ -2,24 +2,22 @@ import { useEffect, useState } from "react";
 import Button from "../atoms/Button";
 import FormField from "../molecules/FormField";
 import Card from "../organisms/Card";
-import axios from "axios";
 import API from "../../api/api";
 import { Flashcard } from "../../models/Flashcard";
-import Banner from "../organisms/Banner";
 
 function PractisePage() {
     const [sentence, setSentence] = useState<string>("");
     const [error, setError] = useState("");
-    const [flashcard, setFlashcard] = useState<Flashcard | null>(null);
+    const [flashcards, setFlashcards] = useState<Flashcard[] | null>(null);
+    const [currentFlashcard, setCurrentFlashcard] = useState<Flashcard | null>(null);
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("");
+    const [index, setIndex] = useState(0);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setError("");
         setSentence(e.target.value);
         setSubmitted(false);
-        setSuccessMessage("");
     }
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
@@ -30,14 +28,18 @@ function PractisePage() {
 
         // TODO: add sentence validation (e.g. contains the word)
         try {
-            const res = await API.post(`/flashcards/${flashcard?.id}`,
+            await API.post(`/flashcards/${currentFlashcard?.id}`,
             { text: sentence },
             {
                 headers: {
                     "Content-Type": "application/json"
                 }
             });
-            setSuccessMessage(res.data.message);
+            // TODO: only do this on success
+            // Otherwise provide feedback to user
+            setSentence("");
+            setIndex(index + 1);
+            setCurrentFlashcard(flashcards![index + 1]);
         } catch (error) {}
 
         setLoading(false);
@@ -50,19 +52,16 @@ function PractisePage() {
     useEffect(() => {
         API.get("/flashcards")
         .then(response => {
-            setFlashcard(response.data[0]);
+            setFlashcards(response.data);
+            setIndex(0);
+            setCurrentFlashcard(response.data[index]);
         })
     }, []);
-
-    const handleSuccessClose = () => {
-        setSuccessMessage("");
-    }
 
     return (
     <div>
         <h1>Practise</h1>
-        {successMessage !== "" && <Banner type="success" message={successMessage} onClose={handleSuccessClose}></Banner>}
-        <Card cardTitle={`Write a sentence using: ${flashcard?.word}`} 
+        <Card cardTitle={`Write a sentence using: ${currentFlashcard?.word}`} 
             body={<FormField label="Sentence:" value={sentence} onChange={handleInputChange} error={error}></FormField>}
             footer={<Button label="Submit" onClick={handleSubmit} disabled={loading || submitted}></Button>}>
         </Card>
