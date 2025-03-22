@@ -3,9 +3,9 @@ import Button from "../atoms/Button"
 import Card from "../organisms/Card"
 import { ChangeEvent, useState } from "react";
 import FormField from "../molecules/FormField";
-import axios from "axios";
 import Banner from "../organisms/Banner";
 import { Link } from "react-router-dom";
+import API from "../../api/api";
 
 // This should be in a template file 
 const ContentWrapper = styled.div`
@@ -21,7 +21,6 @@ const ContentWrapper = styled.div`
 function LandingPage() {
     const [word, setWord] = useState<string>("");
     const [error, setError] = useState("");
-    const [response, setResponse] = useState("");
     const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -46,14 +45,13 @@ function LandingPage() {
         }
 
         try {
-            const res = await axios.post("http://127.0.0.1:8000/flashcards", 
+            await API.post("/flashcards", 
             { text: word },
             {
                 headers: {
                     "Content-Type": "application/json"
                 }
             });
-            setResponse(res.data.message);
             setShowSuccess(true);
         } catch (error) {
             console.error("Error posting word for flashcard:", error);
