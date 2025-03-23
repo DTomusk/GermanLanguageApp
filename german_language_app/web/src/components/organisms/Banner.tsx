@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { styled } from "styled-components";
 import Icon from "../atoms/Icon";
 import CloseButton from "../atoms/CloseButton";

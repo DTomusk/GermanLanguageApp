@@ -5,6 +5,7 @@ import Card from "../organisms/Card";
 import API from "../../api/api";
 import { Flashcard } from "../../models/Flashcard";
 import ContentTemplate from "../templates/ContentTemplate";
+import FormFieldLarge from "../molecules/FormFieldLarge";
 
 function PractisePage() {
     const [sentence, setSentence] = useState<string>("");
@@ -15,7 +16,7 @@ function PractisePage() {
     const [submitted, setSubmitted] = useState(false);
     const [index, setIndex] = useState(0);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setError("");
         setSentence(e.target.value);
         setSubmitted(false);
@@ -62,7 +63,7 @@ function PractisePage() {
     return (
     <ContentTemplate>
         <Card cardTitle={`Write a sentence using: ${currentFlashcard?.word}`} 
-            body={<FormField label="Sentence:" value={sentence} onChange={handleInputChange} error={error}></FormField>}
+            body={<FormFieldLarge label="Sentence:" value={sentence} onChange={handleInputChange} error={error}></FormFieldLarge>}
             footer={<Button label="Submit" onClick={handleSubmit} disabled={loading || submitted}></Button>}>
         </Card>
     </ContentTemplate>
