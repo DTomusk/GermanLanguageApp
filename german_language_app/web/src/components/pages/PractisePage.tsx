@@ -4,6 +4,7 @@ import FormField from "../molecules/FormField";
 import Card from "../organisms/Card";
 import API from "../../api/api";
 import { Flashcard } from "../../models/Flashcard";
+import ContentTemplate from "../templates/ContentTemplate";
 
 function PractisePage() {
     const [sentence, setSentence] = useState<string>("");
@@ -59,13 +60,12 @@ function PractisePage() {
     }, []);
 
     return (
-    <div>
-        <h1>Practise</h1>
+    <ContentTemplate>
         <Card cardTitle={`Write a sentence using: ${currentFlashcard?.word}`} 
             body={<FormField label="Sentence:" value={sentence} onChange={handleInputChange} error={error}></FormField>}
             footer={<Button label="Submit" onClick={handleSubmit} disabled={loading || submitted}></Button>}>
         </Card>
-    </div>
+    </ContentTemplate>
   );
 }
 

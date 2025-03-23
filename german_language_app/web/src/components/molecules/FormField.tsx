@@ -7,8 +7,6 @@ import InputError from "../atoms/InputError";
 const FormFieldWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    margin-bottom: 1rem;
-    margin: 0.5rem;
 `;
 
 interface FormFieldProps {

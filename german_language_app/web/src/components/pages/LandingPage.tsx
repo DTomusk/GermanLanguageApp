@@ -1,22 +1,11 @@
-import { styled } from "styled-components"
 import Button from "../atoms/Button"
 import Card from "../organisms/Card"
 import { ChangeEvent, useState } from "react";
 import FormField from "../molecules/FormField";
 import Banner from "../organisms/Banner";
-import { Link } from "react-router-dom";
 import API from "../../api/api";
-
-// This should be in a template file 
-const ContentWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh;
-    width: 20em;
-    margin: 0 auto;
-    gap: 1em;`;
+import ContentTemplate from "../templates/ContentTemplate";
+import PageLink from "../molecules/PageLink";
 
 function LandingPage() {
     const [word, setWord] = useState<string>("");
@@ -70,17 +59,15 @@ function LandingPage() {
     }
 
     return (
-        <ContentWrapper>
+        <ContentTemplate>
             {showSuccess && <Banner type="success" message="Flashcard created successfully!" onClose={handleSuccessClose}></Banner>}
             {error && <Banner type="error" message={error} onClose={handleErrorClose}></Banner>}
             <Card cardTitle="Create a new Flashcard" 
                 body={<FormField label="Word:" value={word} onChange={handleInputChange} error={error}></FormField>}
                 footer={<Button label="Create Flashcard" onClick={handleSubmit} disabled={loading || submitted}></Button>}>
             </Card>
-            <Link to="/practise">
-                <Button label="Practise" onClick={()=>{}}></Button>
-            </Link>
-        </ContentWrapper>
+            <PageLink path="/practise" label="Practise"></PageLink>
+        </ContentTemplate>
     )
 }
 

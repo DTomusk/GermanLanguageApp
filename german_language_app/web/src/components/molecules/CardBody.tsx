@@ -5,7 +5,7 @@ interface CardBodyProps {
 }
 
 const StyledBody = styled.div`
-    margin: 10px;`;
+    padding: 20px 20px 0px 20px;`;
 
 const CardBody: React.FC<CardBodyProps> = ({children}) => {
     return (<StyledBody>

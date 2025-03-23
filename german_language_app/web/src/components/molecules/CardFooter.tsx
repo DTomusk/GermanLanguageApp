@@ -8,9 +8,7 @@ const StyledFooter = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-
-    padding: 10px;
-    border-top: 1px solid rgb(177, 177, 177);`;
+    padding: 20px;`;
 
 const CardFooter: React.FC<CardFooterProps> = ({children}) => {
     return (<StyledFooter>
