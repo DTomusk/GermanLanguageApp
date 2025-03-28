@@ -6,6 +6,8 @@ import { Flashcard } from "../../models/Flashcard";
 import ContentTemplate from "../templates/ContentTemplate";
 import FormFieldLarge from "../molecules/FormFieldLarge";
 import PageLink from "../molecules/PageLink";
+import BackButton from "../atoms/BackButton";
+import Row from "../molecules/Row";
 
 function PractisePage() {
     const [sessionStarted, setSessionStarted] = useState(false);
@@ -26,9 +28,10 @@ function PractisePage() {
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const updatedSentence = e.target.value;
         setError("");
-        setSentence(e.target.value);
-        validateSentence();
+        setSentence(updatedSentence);
+        validateSentence(updatedSentence);
         setSubmitted(false);
     }
 
@@ -63,12 +66,12 @@ function PractisePage() {
         setLoading(false);
     }
 
-    const validateSentence = () => {
-        if (sentence.trim() === "") {
+    const validateSentence = (updatedSentence: string) => {
+        if (updatedSentence.trim() === "") {
             setSentenceValid(false);
             return;
         }
-        if (sentence.includes(currentFlashcard?.word || "")) {
+        if (updatedSentence.includes(currentFlashcard?.word || "")) {
             setSentenceValid(true);
             return;
         }
@@ -90,26 +93,29 @@ function PractisePage() {
 
     return (
     <ContentTemplate>
-        {!sessionStarted && <Card cardTitle="Welcome to the practise page"
+        {!sessionStarted && 
+        <Card cardTitle="Welcome to the practise page"
             body={<p>You will be given {numberOfCards} words, for each word write a sentence using that word. You will be awarded for sentence complexity and new vocabulary</p>}
             footer={<Button label="Start Session" onClick={startSession}></Button>}>
         </Card>}
         {sessionStarted && !sessionEnded && 
-            <>
-            <div>{index + 1} / {numberOfCards}</div>
-            <Card cardTitle={`Write a sentence using: ${currentFlashcard?.word}`} 
-                body={<>
-                    <FormFieldLarge label="Sentence:" value={sentence} onChange={handleInputChange} error={error}></FormFieldLarge>
-                    <p>The sentence must contain the given word </p>
-                </>}
-                footer={<Button label="Submit" onClick={handleSubmit} disabled={loading || submitted || !sentenceValid}></Button>}>
-            </Card>
+        <Card above={
+            <Row>
+                <BackButton backLink="/" label="Home"></BackButton>
+                <div>{index + 1} / {numberOfCards}</div>
+            </Row>}
+            cardTitle={`Write a sentence using: ${currentFlashcard?.word}`} 
+            body={<>
+                <FormFieldLarge label="Sentence:" value={sentence} onChange={handleInputChange} error={error}></FormFieldLarge>
+                <p>The sentence must contain the given word </p>
             </>}
+            footer={<Button label="Submit" onClick={handleSubmit} disabled={loading || submitted || !sentenceValid}></Button>}>
+        </Card>}
         {sessionEnded && 
-            <Card cardTitle="Summary"
-                body={<p>Well done for completing the session!</p>}
-                footer={<PageLink path="/" label="Back Home"></PageLink>}>
-            </Card>}
+        <Card cardTitle="Summary"
+            body={<p>Well done for completing the session!</p>}
+            footer={<PageLink path="/" label="Back Home"></PageLink>}>
+        </Card>}
     </ContentTemplate>
   );
 }
