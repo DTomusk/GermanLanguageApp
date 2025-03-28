@@ -11,4 +11,4 @@ There is scope to add other languages, as this only depends on the language mode
 Technologies used in this app: 
 - Python with FastApi, SQLAlchemy, SQLite, Alembic run with uvicorn
 - Spacy for NLP
-- React 
+- React with Styled Components
