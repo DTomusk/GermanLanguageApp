@@ -8,6 +8,7 @@ interface CardProps {
     cardTitle: string;
     body: React.ReactNode;
     footer: React.ReactNode;
+    above?: React.ReactNode;
 }
 
 const StyledCard = styled.div`
@@ -17,8 +18,13 @@ const StyledCard = styled.div`
     border-radius: 5px;
     overflow: hidden;`;
 
-const Card: React.FC<CardProps> = ({cardTitle, body, footer}) => {
-    return (<StyledCard>
+const StyledDiv = styled.div`
+    width: 100%;`;
+
+const Card: React.FC<CardProps> = ({cardTitle, body, footer, above}) => {
+    return (<StyledDiv>
+    {above}
+    <StyledCard>
         <CardHeader title={cardTitle}></CardHeader>
         <CardBody>
             {body}
@@ -26,7 +32,8 @@ const Card: React.FC<CardProps> = ({cardTitle, body, footer}) => {
         <CardFooter>
             {footer}
         </CardFooter>
-    </StyledCard>)
+    </StyledCard>
+    </StyledDiv>)
 }
 
 export default Card
