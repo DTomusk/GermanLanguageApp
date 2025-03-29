@@ -21,7 +21,6 @@ app.include_router(router)
 
 logging.basicConfig(level=logging.ERROR)
 
-print("Seeding database")
 seed_database(".\\app\\deu_mixed-typical_2011_10K-words.txt", nlp)
 
 # general case exception handler, improve as we go on 
