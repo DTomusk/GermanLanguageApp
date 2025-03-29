@@ -84,3 +84,15 @@ flashchard_sentence_table = Table(
     Column("sentence_id", Integer, ForeignKey("sentences.id")),
     Column("flashcard_id", Integer, ForeignKey("flashcards.id"))
 )
+
+class Lemma(Base):
+    __tablename__ = "Lemmas"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    lemma = Column(String, nullable=False, index=True)
+
+    def __repr__(self):
+        return f"<Lemma(lemma='{self.lemma}')>"
+
+    def __init__(self, lemma: str):
+        self.lemma = lemma

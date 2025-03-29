@@ -63,7 +63,7 @@ function LandingPage() {
             {showSuccess && <Banner type="success" message="Flashcard created successfully!" onClose={handleSuccessClose}></Banner>}
             {error && <Banner type="error" message={error} onClose={handleErrorClose}></Banner>}
             <Card cardTitle="Create a new Flashcard" 
-                body={<FormField label="Word:" value={word} onChange={handleInputChange} error={error}></FormField>}
+                body={<FormField label="Search for a word to add to your flaschards for practise:" value={word} onChange={handleInputChange} error={error}></FormField>}
                 footer={<Button label="Create Flashcard" onClick={handleSubmit} disabled={loading || submitted}></Button>}>
             </Card>
             <PageLink path="/practise" label="Practise"></PageLink>
