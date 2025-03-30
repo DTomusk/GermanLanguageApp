@@ -1,6 +1,7 @@
 import json
-from app.nlp_utils import nlp
+#from app.nlp_utils import nlp
 import app.data_access as data_access
+from rapidfuzz import process
 
 def process_sentence(db, text: str) -> str:
     # These first two steps will likely be done client-side  
@@ -13,13 +14,14 @@ def process_sentence(db, text: str) -> str:
     # Determine complexity 
     data_access.add_sentence(db, text=text)
 
-    doc = nlp(text)
+    #doc = nlp(text)
 
-    for sentence in doc.sentences:
-        for word in sentence.words:
-            update_vocabulary(db, word.lemma, word.pos)
+    #for sentence in doc.sentences:
+        #for word in sentence.words:
+            #update_vocabulary(db, word.lemma, word.pos)
 
-    return convert_doc_to_json(doc)
+    #return convert_doc_to_json(doc)
+    return "Blah"
 
 def convert_doc_to_json(doc):
     return json.dumps([
@@ -57,14 +59,23 @@ def add_sentence_to_flashcard(db, card_id: int, sentence: str):
     if card is None:
         raise Exception("Flashcard not found")
     else:
+        return "blah"
         # check whether sentence contains the card's word 
         # if it does, add the sentence to the card 
         # i.e. add sentence to db and then card id and sentence id to association table
-        doc = nlp(sentence)
-        doc_sentence = doc.sentences[0]
-        for word in doc_sentence.words:
-            if word.text == card.word:
-                sentence = data_access.add_sentence(db=db, text=sentence)
-                data_access.add_sentence_to_flashcard(db=db, card=card, sentence=sentence)
-                return "Sentence added to flashcard"
-        raise Exception("Sentence does not contain the word on the flashcard")
+        #doc = nlp(sentence)
+        #doc_sentence = doc.sentences[0]
+        #for word in doc_sentence.words:
+            #if word.text == card.word:
+                #sentence = data_access.add_sentence(db=db, text=sentence)
+                #data_access.add_sentence_to_flashcard(db=db, card=card, sentence=sentence)
+                #return "Sentence added to flashcard"
+        #raise Exception("Sentence does not contain the word on the flashcard")
+    
+def search_word(db, search_string) -> list:
+    print("Service searching for word")
+    lemmas = data_access.get_lemmas(db=db)
+    results = process.extract(search_string, lemmas, limit=5)
+    results = [result[0] for result in results]
+    print(results)
+    return results

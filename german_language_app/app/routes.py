@@ -6,7 +6,21 @@ from app.dependencies import get_db
 from app.data_access import get_sentences, get_vocabulary, get_flashcards, get_flashcard_by_id, get_flashcard_sentences
 from sqlalchemy.orm import Session
 
-router = APIRouter()
+router = APIRouter(prefix="/api")
+
+@router.get("/")
+def read_root():
+    return {"message": "Welcome to the German Language App"}
+
+# search for a word in the database
+@router.get("/search/{search_string}", include_in_schema=True)
+def search_words(search_string: str, db: Session=Depends(get_db)):
+    print("Router searching for word")
+    lemmas = service.search_word(db, search_string)
+    return JSONResponse(
+        content={"data": lemmas},
+        status_code=200
+    )
 
 # post a sentence to the database which gets stored and analysed 
 @router.post("/sentences")

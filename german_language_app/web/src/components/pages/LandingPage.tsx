@@ -13,10 +13,13 @@ function LandingPage() {
     const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [searchWords, setSearchWords] = useState([]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        var currentWord = e.target.value;
         setError("");
-        setWord(e.target.value);
+        setWord(currentWord);
+        searchWord(currentWord);
         setSubmitted(false);
         setShowSuccess(false);
     }
@@ -58,6 +61,15 @@ function LandingPage() {
         setError("");
     }
 
+    const searchWord = async (word: string) => {
+        try {
+            await(API.get(`/search/${word}`))
+            .then((response) => {
+                setSearchWords(response.data.data);
+            })
+        } catch (error) {}
+    }
+
     return (
         <ContentTemplate>
             {showSuccess && <Banner type="success" message="Flashcard created successfully!" onClose={handleSuccessClose}></Banner>}
@@ -67,6 +79,12 @@ function LandingPage() {
                 footer={<Button label="Create Flashcard" onClick={handleSubmit} disabled={loading || submitted}></Button>}>
             </Card>
             <PageLink path="/practise" label="Practise"></PageLink>
+            <ul>
+                {searchWords.map((word) => {
+                    return <li key={word}>{word}</li>
+                }
+                )}
+            </ul>
         </ContentTemplate>
     )
 }

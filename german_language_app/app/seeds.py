@@ -1,7 +1,6 @@
 import re
 from app.database import SessionLocal
 from app.models import Lemma
-from pathlib import Path
 
 # add lemmas to the database that aren't propn or x 
 def seed_database(file_path, nlp):

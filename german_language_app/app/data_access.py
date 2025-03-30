@@ -1,6 +1,6 @@
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-from app.models import Sentence, Vocabulary, Flashcard
+from app.models import Lemma, Sentence, Vocabulary, Flashcard
 
 # Add a sentence to the db 
 def add_sentence(db: Session, text: str):
@@ -50,3 +50,12 @@ def add_sentence_to_flashcard(db: Session, card: Flashcard, sentence: Sentence):
 
 def get_flashcard_sentences(db: Session, card_id: int):
     return db.query(Flashcard).filter(Flashcard.id == card_id).first().sentences
+
+# TODO: use word 
+# we might need to grab all the words and then search them in memory 
+# improve gradually 
+def get_lemmas(db: Session):
+    result = db.query(Lemma.lemma).all()
+    lemmas = [row[0] for row in result]
+    print(lemmas)
+    return lemmas
