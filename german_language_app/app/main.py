@@ -2,8 +2,8 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from app.routes.routes import router
-from app.seeds import seed_database
-from app.nlp_utils import nlp
+#from app.seeds import seed_database
+#from app.nlp_utils import nlp
 import logging
 
 app = FastAPI(openapi_url="/openapi.json", docs_url="/docs", redoc_url="/redoc")
@@ -23,7 +23,7 @@ for route in app.routes:
 
 logging.basicConfig(level=logging.DEBUG)
 
-seed_database(".\\app\\deu_mixed-typical_2011_10K-words.txt", nlp)
+#seed_database(".\\app\\deu_mixed-typical_2011_10K-words.txt", nlp)
 
 # general case exception handler, improve as we go on 
 @app.exception_handler(Exception)
