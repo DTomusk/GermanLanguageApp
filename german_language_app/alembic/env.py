@@ -3,7 +3,7 @@ from logging.config import fileConfig
 from alembic import context
 
 from os import getenv
-from app.models import Base
+from app.models.models import metadata_obj
 from dotenv import load_dotenv
 from app.database import create_engine
 
@@ -24,7 +24,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = Base.metadata
+target_metadata = metadata_obj
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
