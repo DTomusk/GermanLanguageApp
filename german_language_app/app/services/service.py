@@ -1,6 +1,7 @@
 from app.services.interfaces.iservice import IService
 from app.db_access.interfaces.ireader import IReader
 from app.db_access.interfaces.iwriter import IWriter
+from rapidfuzz import process
 
 class Service(IService):
     def __init__(self, reader: IReader, writer: IWriter):
@@ -18,5 +19,9 @@ class Service(IService):
     #def add_sentence_to_flashcard(self, db, card_id, sentence):
         #pass
 
-    #def search_word(self, db, search_string):
-        #pass
+    def search_word(self, search_string, limit):
+        print("searching for: ", search_string)
+        lemmas = self.reader.get_all_lemmas()
+        print(lemmas)
+        results = process.extract(search_string, lemmas, limit=limit)
+        return results

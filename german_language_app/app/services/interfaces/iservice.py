@@ -13,6 +13,6 @@ class IService(ABC):
     #def add_sentence_to_flashcard(self, db, card_id, sentence):
         #pass
 
-    #@abstractmethod
-    #def search_word(self, db, search_string):
-        #pass
+    @abstractmethod
+    def search_word(self, db, search_string):
+        pass
