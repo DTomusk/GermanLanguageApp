@@ -10,7 +10,6 @@ service = Service(Reader(), Writer())
 # search for a word in the database
 @router.get("/search/{search_string}", include_in_schema=True)
 def search_words(search_string: str):
-    print("searching for: ", search_string)
     lemmas = service.search_word(search_string, 10)
     return JSONResponse(
         content={"data": lemmas},

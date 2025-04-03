@@ -19,9 +19,9 @@ class Service(IService):
     #def add_sentence_to_flashcard(self, db, card_id, sentence):
         #pass
 
+    # TODO: consider caching or ways to decrease amount of data retrieved
+    # (this is ok for now as the db has about 3000 entries)
     def search_word(self, search_string, limit):
-        print("searching for: ", search_string)
         lemmas = self.reader.get_all_lemmas()
-        print(lemmas)
-        results = process.extract(search_string, lemmas, limit=limit)
-        return results
+        results = process.extract(search_string, lemmas, limit=limit, score_cutoff=75)
+        return [row[0] for row in results]
