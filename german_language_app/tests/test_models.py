@@ -1,6 +1,6 @@
 import pytest 
 from pydantic import ValidationError
-from app.models.models import SentenceInput
+from app.db_access.db_models import SentenceInput
 
 def test_valid_sentence_input():
     valid_sentences = [

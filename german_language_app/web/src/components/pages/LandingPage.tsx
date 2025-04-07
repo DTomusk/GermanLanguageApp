@@ -7,6 +7,10 @@ import ContentTemplate from "../templates/ContentTemplate";
 import PageLink from "../molecules/PageLink";
 import SearchBox from "../organisms/SearchBox";
 
+// todo: we need to submit a lemma id 
+// search words should be lemmas 
+// if the user searches for a word for which there isn't a lemma
+// the lemma needs to be added to the database and the id returned
 function LandingPage() {
     const [word, setWord] = useState<string>("");
     const [error, setError] = useState("");
@@ -42,7 +46,7 @@ function LandingPage() {
         }
 
         try {
-            await API.post("/flashcards", 
+            await API.post("/add_flashcard", 
             { text: word },
             {
                 headers: {
