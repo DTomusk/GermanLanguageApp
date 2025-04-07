@@ -18,9 +18,6 @@ app.add_middleware(
 
 app.include_router(router)
 
-for route in app.routes:
-    print(route)
-
 logging.basicConfig(level=logging.DEBUG)
 
 #seed_database(".\\app\\deu_mixed-typical_2011_10K-words.txt", nlp)
