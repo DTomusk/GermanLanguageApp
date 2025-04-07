@@ -1,11 +1,11 @@
 import Button from "../atoms/Button"
 import Card from "../organisms/Card"
 import { ChangeEvent, useState } from "react";
-import FormField from "../molecules/FormField";
 import Banner from "../organisms/Banner";
 import API from "../../api/api";
 import ContentTemplate from "../templates/ContentTemplate";
 import PageLink from "../molecules/PageLink";
+import SearchBox from "../organisms/SearchBox";
 
 function LandingPage() {
     const [word, setWord] = useState<string>("");
@@ -13,12 +13,20 @@ function LandingPage() {
     const [loading, setLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [searchWords, setSearchWords] = useState<string[]>([]);
+    const [selectedWord, setSelectedWord] = useState<string>("");
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        var currentWord = e.target.value;
         setError("");
-        setWord(e.target.value);
+        setWord(currentWord);
         setSubmitted(false);
         setShowSuccess(false);
+        if (currentWord.length === 0) {
+            setSearchWords([]);
+            return;
+        }
+        searchWord(currentWord);
     }
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
@@ -58,15 +66,41 @@ function LandingPage() {
         setError("");
     }
 
+    const searchWord = async (word: string) => {
+        try {
+            await(API.get(`/search/${word}`))
+            .then((response) => {
+                setSearchWords(response.data.data);
+            })
+        } catch (error) {}
+    }
+
+    const handleSelect = (selectedWord: string) => {
+        setWord(selectedWord);
+        setSelectedWord(selectedWord);
+        setSearchWords([]);
+        setSubmitted(false);
+        setShowSuccess(false);
+    }
+
     return (
         <ContentTemplate>
             {showSuccess && <Banner type="success" message="Flashcard created successfully!" onClose={handleSuccessClose}></Banner>}
             {error && <Banner type="error" message={error} onClose={handleErrorClose}></Banner>}
             <Card cardTitle="Create a new Flashcard" 
-                body={<FormField label="Word:" value={word} onChange={handleInputChange} error={error}></FormField>}
+                body={
+                    <SearchBox
+                        searchSuggestions={searchWords}
+                        handleSelect={handleSelect}
+                        searchText={word}
+                        handleInputChange={handleInputChange}>
+                    </SearchBox>}
                 footer={<Button label="Create Flashcard" onClick={handleSubmit} disabled={loading || submitted}></Button>}>
             </Card>
             <PageLink path="/practise" label="Practise"></PageLink>
+            <ul>
+                
+            </ul>
         </ContentTemplate>
     )
 }

@@ -1,8 +1,8 @@
-import React from "react";
 import styled from "styled-components";
 import Label from "../atoms/Label";
 import Input from "../atoms/Input";
 import InputError from "../atoms/InputError";
+import { FC } from "react";
 
 const FormFieldWrapper = styled.div`
     display: flex;
@@ -16,7 +16,7 @@ interface FormFieldProps {
     error?: string;
 }
 
-const FormField: React.FC<FormFieldProps> = ({label, value, onChange, error}) => {
+const FormField: FC<FormFieldProps> = ({label, value, onChange, error}) => {
     return (
         <FormFieldWrapper>
             <Label>{label}</Label>
