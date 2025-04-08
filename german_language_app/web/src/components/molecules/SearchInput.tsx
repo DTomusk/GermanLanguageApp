@@ -17,6 +17,7 @@ interface SearchBoxProps {
     onFocus?: () => void;
     onBlur?: () => void;
     handleSearch: (e: { preventDefault: () => void; }) => void;
+    disabled?: boolean;
 }
 
 const SearchBar = styled.div`
@@ -24,13 +25,13 @@ const SearchBar = styled.div`
     width: 100%;
     align-items: stretch;`
 
-const SearchInput: FC<SearchBoxProps> = ({ label, searchText, onChange, onFocus, onBlur, handleSearch }) => {
+const SearchInput: FC<SearchBoxProps> = ({ label, searchText, onChange, onFocus, onBlur, handleSearch, disabled }) => {
     return (
         <StyledSearchBox>
             <Label>{label}</Label>
             <SearchBar>
-                <Input value={searchText} onChange={onChange} placeholder="Search..." onFocus={onFocus} onBlur={onBlur} />
-                <SearchButton onClick={handleSearch}/>
+                <Input value={searchText} onChange={onChange} placeholder="Search..." onFocus={onFocus} onBlur={onBlur} disabled={disabled}/>
+                <SearchButton onClick={handleSearch} disabled={disabled}/>
             </SearchBar>
         </StyledSearchBox>
     );

@@ -16,10 +16,11 @@ interface TextInputProps {
     placeholder: string;
     onFocus?: () => void;
     onBlur?: () => void;
+    disabled?: boolean;
 }
 
-const Input: React.FC<TextInputProps> = ({ value, onChange, placeholder, onFocus, onBlur}) => {
-    return <StyledTextInput value={value} onChange={onChange} placeholder={placeholder} onFocus={onFocus} onBlur={onBlur}/>;
+const Input: React.FC<TextInputProps> = ({ value, onChange, placeholder, onFocus, onBlur, disabled}) => {
+    return <StyledTextInput value={value} onChange={onChange} placeholder={placeholder} onFocus={onFocus} onBlur={onBlur} disabled={disabled}/>;
 }
 
 export default Input;

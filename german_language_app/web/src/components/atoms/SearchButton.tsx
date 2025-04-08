@@ -24,12 +24,12 @@ const StyledSearchIcon = styled(SearchIcon)`
 
 interface SearchButtonProps {
     onClick: (e: { preventDefault: () => void; }) => void;
-
+    disabled?: boolean;
 }
 
-const SearchButton: FC<SearchButtonProps> = ({onClick}) => {
+const SearchButton: FC<SearchButtonProps> = ({onClick, disabled}) => {
     return (
-        <StyledSearchButton onClick={onClick}>
+        <StyledSearchButton onClick={onClick} disabled={disabled}>
             <StyledSearchIcon />
         </StyledSearchButton>
     )
