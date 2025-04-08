@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import SearchInput from "../molecules/SearchInput";
 import SearchSuggestionContainer from "../atoms/SearchSuggestionContainer";
 import SearchSuggestion from "../atoms/SearchSuggestion";
@@ -15,13 +15,21 @@ interface SearchBoxProps {
 }
 
 const SearchBox: FC<SearchBoxProps> = ({searchSuggestions, handleSelect, searchText, handleInputChange}) => {
+    const [isInputFocused, setInputFocused] = useState(false);
     return (
         <StyledSearchBox>
-            <SearchInput label="Search for a word to add to your flaschards for practise:" searchText={searchText} onChange={handleInputChange}>
+            <SearchInput label="Search for a word to add to your flaschards for practise:" 
+                searchText={searchText} 
+                onChange={handleInputChange} 
+                onFocus={() => setInputFocused(true)} 
+                onBlur={() => setInputFocused(false)} >
             </SearchInput>
-            {searchSuggestions.length > 0 && <SearchSuggestionContainer>
+            {isInputFocused && searchSuggestions.length > 0 && <SearchSuggestionContainer>
                 {searchSuggestions.map((suggestion) => {
-                return <SearchSuggestion text={suggestion.text} onClick={()=>handleSelect(suggestion.id)}></SearchSuggestion>
+                return <SearchSuggestion text={suggestion.text} onMouseDown={(e)=>{
+                    e.preventDefault();
+                    handleSelect(suggestion.id)}}
+                    />
                 })}
             </SearchSuggestionContainer>}
         </StyledSearchBox>
