@@ -8,8 +8,8 @@ const StyledSearchBox = styled.div`
     position: relative;`;
 
 interface SearchBoxProps {
-    searchSuggestions: string[];
-    handleSelect: (suggestion: string) => void;
+    searchSuggestions: {id: number, text: string}[];
+    handleSelect: (id: number) => void;
     searchText: string;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -21,7 +21,7 @@ const SearchBox: FC<SearchBoxProps> = ({searchSuggestions, handleSelect, searchT
             </SearchInput>
             {searchSuggestions.length > 0 && <SearchSuggestionContainer>
                 {searchSuggestions.map((suggestion) => {
-                return <SearchSuggestion text={suggestion} onClick={()=>handleSelect(suggestion)}></SearchSuggestion>
+                return <SearchSuggestion text={suggestion.text} onClick={()=>handleSelect(suggestion.id)}></SearchSuggestion>
                 })}
             </SearchSuggestionContainer>}
         </StyledSearchBox>
