@@ -4,8 +4,7 @@ interface CardHeaderProps {
     title: string;
 }
 
-const StyledHeader = styled.div`
-    font-size: 20px;
+const StyledHeader = styled.h2`
     font-weight: bold;
     padding: 25px;
     background-color:${({ theme }) => theme.colors.primary };

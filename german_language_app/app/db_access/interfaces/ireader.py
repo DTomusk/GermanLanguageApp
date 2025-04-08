@@ -10,3 +10,7 @@ class IReader(ABC):
     @abstractmethod
     def get_flashcard(self, lemma_id):
         pass
+
+    @abstractmethod
+    def get_lemma(self, lemma) -> Lemma:
+        pass

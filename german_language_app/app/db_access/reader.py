@@ -17,3 +17,12 @@ class Reader(IReader):
             stmt = select(flashcard_table).where(flashcard_table.c.lemma_id == lemma_id).limit(1)
             result = conn.execute(stmt)
             return result.fetchone()
+        
+    def get_lemma(self, lemma) -> Lemma:
+        with engine.begin() as conn:
+            stmt = select(lemma_table).where(lemma_table.c.lemma == lemma).limit(1)
+            result = conn.execute(stmt)
+            row = result.fetchone()
+            if row:
+                return Lemma(id=row.id, lemma=row.lemma)
+            return None

@@ -116,7 +116,7 @@ function LandingPage() {
                         handleInputChange={handleInputChange}>
                     </SearchBox>
                     <p>Create a flashcard for:</p>
-                    <h2>{selectedLemma?.lemma}</h2>
+                    <h1>{selectedLemma?.lemma}</h1>
                     </>}
                 footer={<Button label="Create Flashcard" onClick={handleSubmit} disabled={selectedLemma === null || loading || submitted}></Button>}>
             </Card>

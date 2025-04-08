@@ -5,6 +5,9 @@ const StyledTextInput = styled.input`
     padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
+    height: 100%;
+    flex-grow: 1;
+    border-radius: 0.5rem 0 0 0.5rem;
 `;
 
 interface TextInputProps {

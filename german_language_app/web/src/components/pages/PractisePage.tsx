@@ -94,7 +94,8 @@ function PractisePage() {
     return (
     <ContentTemplate>
         {!sessionStarted && 
-        <Card cardTitle="Welcome to the practise page"
+        <Card above={<BackButton backLink="/" label="Home"></BackButton>}
+            cardTitle="Welcome to the practise page"
             body={<p>You will be given {numberOfCards} words, for each word write a sentence using that word. You will be awarded for sentence complexity and new vocabulary</p>}
             footer={<Button label="Start Session" onClick={startSession}></Button>}>
         </Card>}

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from app.models.responses import SearchAndAddResponse
 
 class IService(ABC):
     @abstractmethod
@@ -14,5 +15,9 @@ class IService(ABC):
         #pass
 
     @abstractmethod
-    def search_word(self, db, search_string):
+    def search_word(self, search_string):
+        pass
+
+    @abstractmethod
+    def search_and_add(self, search_string, nlp) -> SearchAndAddResponse:
         pass

@@ -2,6 +2,7 @@ import { FC } from "react";
 import Label from "../atoms/Label";
 import Input from "../atoms/Input";
 import { styled } from "styled-components";
+import SearchButton from "../atoms/SearchButton";
 
 const StyledSearchBox = styled.div`
     width: 100%;
@@ -17,11 +18,19 @@ interface SearchBoxProps {
     onBlur?: () => void;
 }
 
+const SearchBar = styled.div`
+    display: flex;
+    width: 100%;
+    align-items: stretch;`
+
 const SearchInput: FC<SearchBoxProps> = ({ label, searchText, onChange, onFocus, onBlur }) => {
     return (
         <StyledSearchBox>
             <Label>{label}</Label>
-            <Input value={searchText} onChange={onChange} placeholder="Search..." onFocus={onFocus} onBlur={onBlur} />
+            <SearchBar>
+                <Input value={searchText} onChange={onChange} placeholder="Search..." onFocus={onFocus} onBlur={onBlur} />
+                <SearchButton/>
+            </SearchBar>
         </StyledSearchBox>
     );
 }
