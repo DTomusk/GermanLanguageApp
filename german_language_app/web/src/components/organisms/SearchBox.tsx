@@ -12,9 +12,10 @@ interface SearchBoxProps {
     handleSelect: (id: number) => void;
     searchText: string;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleSearch: (e: { preventDefault: () => void; }) => void;
 }
 
-const SearchBox: FC<SearchBoxProps> = ({searchSuggestions, handleSelect, searchText, handleInputChange}) => {
+const SearchBox: FC<SearchBoxProps> = ({searchSuggestions, handleSelect, searchText, handleInputChange, handleSearch}) => {
     const [isInputFocused, setInputFocused] = useState(false);
     return (
         <StyledSearchBox>
@@ -22,7 +23,8 @@ const SearchBox: FC<SearchBoxProps> = ({searchSuggestions, handleSelect, searchT
                 searchText={searchText} 
                 onChange={handleInputChange} 
                 onFocus={() => setInputFocused(true)} 
-                onBlur={() => setInputFocused(false)} >
+                onBlur={() => setInputFocused(false)} 
+                handleSearch={handleSearch}>
             </SearchInput>
             {isInputFocused && searchSuggestions.length > 0 && <SearchSuggestionContainer>
                 {searchSuggestions.map((suggestion) => {

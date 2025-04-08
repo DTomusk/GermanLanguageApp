@@ -16,6 +16,7 @@ interface SearchBoxProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onFocus?: () => void;
     onBlur?: () => void;
+    handleSearch: (e: { preventDefault: () => void; }) => void;
 }
 
 const SearchBar = styled.div`
@@ -23,13 +24,13 @@ const SearchBar = styled.div`
     width: 100%;
     align-items: stretch;`
 
-const SearchInput: FC<SearchBoxProps> = ({ label, searchText, onChange, onFocus, onBlur }) => {
+const SearchInput: FC<SearchBoxProps> = ({ label, searchText, onChange, onFocus, onBlur, handleSearch }) => {
     return (
         <StyledSearchBox>
             <Label>{label}</Label>
             <SearchBar>
                 <Input value={searchText} onChange={onChange} placeholder="Search..." onFocus={onFocus} onBlur={onBlur} />
-                <SearchButton/>
+                <SearchButton onClick={handleSearch}/>
             </SearchBar>
         </StyledSearchBox>
     );

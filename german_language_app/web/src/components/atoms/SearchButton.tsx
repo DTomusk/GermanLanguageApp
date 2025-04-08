@@ -22,9 +22,14 @@ const StyledSearchIcon = styled(SearchIcon)`
     cursor: pointer;
     `;
 
-const SearchButton: FC = () => {
+interface SearchButtonProps {
+    onClick: (e: { preventDefault: () => void; }) => void;
+
+}
+
+const SearchButton: FC<SearchButtonProps> = ({onClick}) => {
     return (
-        <StyledSearchButton>
+        <StyledSearchButton onClick={onClick}>
             <StyledSearchIcon />
         </StyledSearchButton>
     )
