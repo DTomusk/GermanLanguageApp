@@ -13,13 +13,15 @@ interface SearchBoxProps {
     label: string;
     searchText: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onFocus?: () => void;
+    onBlur?: () => void;
 }
 
-const SearchInput: FC<SearchBoxProps> = ({ label, searchText, onChange }) => {
+const SearchInput: FC<SearchBoxProps> = ({ label, searchText, onChange, onFocus, onBlur }) => {
     return (
         <StyledSearchBox>
             <Label>{label}</Label>
-            <Input value={searchText} onChange={onChange} placeholder="Search..." />
+            <Input value={searchText} onChange={onChange} placeholder="Search..." onFocus={onFocus} onBlur={onBlur} />
         </StyledSearchBox>
     );
 }

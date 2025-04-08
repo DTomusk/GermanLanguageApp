@@ -11,10 +11,12 @@ interface TextInputProps {
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     placeholder: string;
+    onFocus?: () => void;
+    onBlur?: () => void;
 }
 
-const Input: React.FC<TextInputProps> = ({ value, onChange, placeholder}) => {
-    return <StyledTextInput value={value} onChange={onChange} placeholder={placeholder} />;
+const Input: React.FC<TextInputProps> = ({ value, onChange, placeholder, onFocus, onBlur}) => {
+    return <StyledTextInput value={value} onChange={onChange} placeholder={placeholder} onFocus={onFocus} onBlur={onBlur}/>;
 }
 
 export default Input;
