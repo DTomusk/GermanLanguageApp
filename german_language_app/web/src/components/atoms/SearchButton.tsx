@@ -13,6 +13,8 @@ const StyledSearchButton = styled.button`
     &:hover {
         background-color: ${({ theme }) => theme.colors.primaryLight };
     }
+    &:disabled {
+        background-color: ${({ theme }) => theme.colors.grey };
 `;
 
 const StyledSearchIcon = styled(SearchIcon)`

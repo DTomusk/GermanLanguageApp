@@ -7,6 +7,8 @@ import ContentTemplate from "../templates/ContentTemplate";
 import PageLink from "../molecules/PageLink";
 import SearchBox from "../organisms/SearchBox";
 import { Lemma } from "../../models/Lemma";
+import LoadingIcon from "../atoms/LoadingIcon";
+import InputError from "../atoms/InputError";
 
 // todo: we need to submit a lemma id 
 // search words should be lemmas 
@@ -16,23 +18,40 @@ function LandingPage() {
     const [word, setWord] = useState<string>("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [showSuccess, setShowSuccess] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const [searchWords, setSearchWords] = useState<Lemma[]>([]);
     const [selectedLemma, setSelectedLemma] = useState<Lemma | null>(null);
+    const [searchDisabled, setSearchDisabled] = useState(false);
+    const [invalidMessage, setInvalidMessage] = useState("");
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         var currentWord = e.target.value;
+        
         setError("");
         setWord(currentWord);
         setSubmitted(false);
-        setShowSuccess(false);
+        setSuccessMessage("");
         setSelectedLemma(null);
         if (currentWord.length === 0) {
             setSearchWords([]);
             return;
         }
-        searchWord(currentWord);
+        const isValid = validateWord(currentWord);
+        if (isValid) {
+            searchWord(currentWord);
+            setWord(currentWord);
+        }
+    }
+
+    const validateWord = (word: string) => {
+        const checkWord = word.trim();
+        if (checkWord.split(" ").length > 1) {
+            setInvalidMessage("Please enter a single word");
+            return false;
+        }
+        setInvalidMessage("");
+        return true;
     }
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
@@ -47,23 +66,14 @@ function LandingPage() {
             return;
         }
 
-        if (!selectedLemma) {
-            // if no lemma is selected, we need to create a new one
-            // post the text to an endpoint
-            // the endpoint should then lemmatize the word and return the lemma
-            // we need to think of how we present this
-            // if a lemma hasn't been selected, then the send button should be disabled
-            // if the user presses enter 
-        }
-
         try {
-            await API.post(`/add_flashcard/${selectedLemma?.id}`, 
+            var response = await API.post(`/add_flashcard/${selectedLemma?.id}`, 
             {
                 headers: {
                     "Content-Type": "application/json"
                 }
             });
-            setShowSuccess(true);
+            setSuccessMessage(response.data.message);
         } catch (error) {
             console.error("Error posting word for flashcard:", error);
             setError("Error: couldn't create flashcard");
@@ -73,7 +83,7 @@ function LandingPage() {
     };
 
     const handleSuccessClose = () => {
-        setShowSuccess(false);
+        setSuccessMessage("");
     }
 
     const handleErrorClose = () => {
@@ -82,11 +92,13 @@ function LandingPage() {
 
     const searchWord = async (word: string) => {
         try {
-            await(API.get(`/search/${word}`))
-            .then((response) => {
-                setSearchWords(response.data.data);
-            })
-        } catch (error) {}
+            var response = await(API.get(`/search/${word}`));
+
+            setSearchWords(response.data.data);
+            
+        } catch (error) {
+
+        }
     }
 
     const handleSelect = (id: number) => {
@@ -96,15 +108,32 @@ function LandingPage() {
             return;
         }
         setSelectedLemma(lemma);
+        setInvalidMessage("");
         setWord(lemma.lemma);
         setSearchWords([]);
         setSubmitted(false);
-        setShowSuccess(false);
+        setSuccessMessage("");
+    }
+
+    const handleSearch = async (e: { preventDefault: () => void; }) => {
+        e.preventDefault();
+        setSearchDisabled(true);
+
+        try {
+            await(API.get(`/search_and_add/${word}`))
+            .then((response) => {
+                setSelectedLemma(response.data.data);
+                setWord(response.data.data.lemma);
+            })
+        } catch (error) {}
+        finally {
+            setSearchDisabled(false);
+        }
     }
 
     return (
         <ContentTemplate>
-            {showSuccess && <Banner type="success" message="Flashcard created successfully!" onClose={handleSuccessClose}></Banner>}
+            {successMessage && <Banner type="success" message={successMessage} onClose={handleSuccessClose}></Banner>}
             {error && <Banner type="error" message={error} onClose={handleErrorClose}></Banner>}
             <Card cardTitle="Create a new Flashcard" 
                 body={
@@ -113,14 +142,19 @@ function LandingPage() {
                         searchSuggestions={searchWords.map(lemma => ({ id: lemma.id, text: lemma.lemma }))}
                         handleSelect={handleSelect}
                         searchText={word}
-                        handleInputChange={handleInputChange}>
+                        handleInputChange={handleInputChange}
+                        handleSearch={handleSearch}
+                        disabled={searchDisabled}>
                     </SearchBox>
+                    {invalidMessage && <InputError text={invalidMessage}/>}
+
+                    {searchDisabled && <LoadingIcon/>}
+                    {!searchDisabled && <>
                     <p>Create a flashcard for:</p>
-                    <h1>{selectedLemma?.lemma}</h1>
+                    <h1>{selectedLemma?.lemma}</h1></>}
                     </>}
                 footer={<Button label="Create Flashcard" onClick={handleSubmit} disabled={selectedLemma === null || loading || submitted}></Button>}>
             </Card>
-            { selectedLemma && <p>{selectedLemma.id}: {selectedLemma.lemma}</p>}
             <PageLink path="/practise" label="Practise"></PageLink>
             <ul>
                 

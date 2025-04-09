@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from app.models.responses import SearchAndAddResponse
+from app.models.responses import SearchAndAddResponse, AddFlashcardResponse
 
 class IService(ABC):
     @abstractmethod
@@ -15,7 +15,7 @@ class IService(ABC):
         #pass
 
     @abstractmethod
-    def search_word(self, search_string):
+    def search_word(self, search_string) -> AddFlashcardResponse:
         pass
 
     @abstractmethod

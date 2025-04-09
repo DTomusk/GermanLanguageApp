@@ -1,7 +1,7 @@
 from app.services.interfaces.iservice import IService
 from app.db_access.interfaces.ireader import IReader
 from app.db_access.interfaces.iwriter import IWriter
-from app.models.responses import SearchAndAddResponse
+from app.models.responses import SearchAndAddResponse, AddFlashcardResponse
 from rapidfuzz import process
 
 class Service(IService):
@@ -9,10 +9,12 @@ class Service(IService):
         self.reader = reader
         self.writer = writer
 
-    def add_flashcard(self, lemma_id):
+    def add_flashcard(self, lemma_id) -> AddFlashcardResponse:
         existing_flashcard = self.reader.get_flashcard(lemma_id)
         if existing_flashcard is None:
             self.writer.add_flashcard(lemma_id)
+            return AddFlashcardResponse(True, "Flashcard added successfully")
+        return AddFlashcardResponse(True, "Flashcard already exists")
 
     # TODO: consider caching or ways to decrease amount of data retrieved
     # (this is ok for now as the db has about 3000 entries)

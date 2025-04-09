@@ -39,8 +39,13 @@ def search_and_add(search_string: str):
 
 @router.post("/add_flashcard/{lemma_id}", include_in_schema=True)
 def add_flashcard(lemma_id: int):
-    service.add_flashcard(lemma_id)
+    result = service.add_flashcard(lemma_id)
+    if result.isSuccess:
+        return JSONResponse(
+            content={"message": result.message},
+            status_code=200
+        )
     return JSONResponse(
-        content={"message": "Flashcard added"},
-        status_code=200
+        content={"message": result.message},
+        status_code=400
    )

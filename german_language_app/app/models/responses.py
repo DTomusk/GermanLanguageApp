@@ -5,3 +5,8 @@ class SearchAndAddResponse:
         self.isSuccess = isSuccess
         self.lemma = lemma
         self.message = message
+
+class AddFlashcardResponse:
+    def __init__(self, isSuccess: bool, message: str=None):
+        self.isSuccess = isSuccess
+        self.message = message
