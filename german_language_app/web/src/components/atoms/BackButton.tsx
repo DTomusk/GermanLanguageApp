@@ -12,6 +12,7 @@ const StyledLink = styled(Link)`
     cursor: pointer;
     &:hover {text-decoration: underline};
     color: black;
+    flex-grow: 1;
     `;
 
 interface BackButtonProps {

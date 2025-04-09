@@ -1,8 +1,8 @@
 import re
 
 from sqlalchemy import insert, select
-from app.database import engine
-from app.models.models import lemma_table
+from app.db_access.database import engine
+from app.db_access.db_models import lemma_table
 
 # add lemmas to the database that aren't propn or x 
 def seed_database(file_path, nlp):

@@ -12,12 +12,12 @@ const StyledSearchSuggestion = styled.div`
 
 interface SearchSuggestionProps {
     text: string;
-    onClick: (e: { preventDefault: () => void; }) => void;
+    onMouseDown: (e: { preventDefault: () => void; }) => void;
 }
 
-const SearchSuggestion: FC<SearchSuggestionProps> = ({ text,  onClick}) => {
+const SearchSuggestion: FC<SearchSuggestionProps> = ({ text,  onMouseDown}) => {
     return (
-        <StyledSearchSuggestion onClick={onClick}>
+        <StyledSearchSuggestion onMouseDown={onMouseDown}>
             {text}
         </StyledSearchSuggestion>
     )

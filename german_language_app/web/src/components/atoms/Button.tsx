@@ -15,7 +15,9 @@ const StyledButton = styled.button`
     border: none;
     cursor: pointer;
     width: 100%;
+    height: 4rem;
     font-weight: bold;
+    font-size: 1rem;
     &:hover {
         background-color: ${({ theme }) => theme.colors.primaryLight };
     }

@@ -5,8 +5,8 @@ export const theme = {
         grey: 'rgb(177, 177, 177)',
     },
     success: {
-        background: 'rgb(150, 240, 151)',
-        text: 'rgb(13, 100, 10)',
+        background: 'rgb(207, 255, 207)',
+        text: 'rgb(23, 82, 21)',
         borderColor: 'rgb(4, 151, 6)',
     },
     info: {

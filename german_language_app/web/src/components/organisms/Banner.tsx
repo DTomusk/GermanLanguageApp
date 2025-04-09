@@ -13,12 +13,12 @@ const StyledBanner = styled.div<{
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    overflow: hidden;
     border-radius: 5px;
     background-color: ${props => props.bgcolor};
     border: 1px solid ${props => props.bordercolor}; 
     color: ${props => props.color};
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    margin-bottom: 1em;
 `;
 
 interface BannerProps {
