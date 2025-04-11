@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List
-from app.models.models import Lemma
+from app.models.models import Flashcard, Lemma
 
 class IReader(ABC):
     @abstractmethod
@@ -8,9 +8,17 @@ class IReader(ABC):
         pass
 
     @abstractmethod
-    def get_flashcard(self, lemma_id):
+    def get_all_flashcards(self) -> List[Flashcard]:
         pass
 
     @abstractmethod
-    def get_lemma(self, lemma) -> Lemma:
+    def get_flashcard(self, lemma_id: int):
+        pass
+
+    @abstractmethod
+    def get_lemma(self, lemma: str) -> Lemma:
+        pass
+
+    @abstractmethod
+    def get_lemma_for_flashcard(self, card_id: int) -> Lemma:
         pass

@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+from typing import List
 from app.models.models import Lemma
 
 class SearchAndAddResponse:
@@ -10,3 +12,27 @@ class AddFlashcardResponse:
     def __init__(self, isSuccess: bool, message: str=None):
         self.isSuccess = isSuccess
         self.message = message
+
+@dataclass
+class WordResponse:
+    lemma: str
+    pos: str
+    feats: str
+    dependencyRelation: str
+    head: int
+    
+    def __init__(self, lemma: str, pos: str, feats: str, dependencyRelation: str, head: int):
+        self.lemma = lemma
+        self.pos = pos
+        self.feats = feats
+        self.dependencyRelation = dependencyRelation
+        self.head = head
+
+# We want to return whether it was a success
+# a message corresponding to exactly what happened
+# and an nlp doc of the input sentence
+class AddSentenceToFlashcardResponse:
+    def __init__(self, isSuccess: bool, words: List[WordResponse], message: str=None):
+        self.isSuccess = isSuccess
+        self.message = message
+        self.words = words

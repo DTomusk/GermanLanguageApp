@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from app.models.responses import SearchAndAddResponse, AddFlashcardResponse
+from app.models.responses import AddSentenceToFlashcardResponse, SearchAndAddResponse, AddFlashcardResponse
+from app.models.inputs import SentenceInput
 
 class IService(ABC):
     @abstractmethod
@@ -10,9 +11,9 @@ class IService(ABC):
     #def get_practise_session(self, db, number):
         #pass
 
-    #@abstractmethod
-    #def add_sentence_to_flashcard(self, db, card_id, sentence):
-        #pass
+    @abstractmethod
+    def add_sentence_to_flashcard(self, card_id: int, sentence: SentenceInput, nlp) -> AddSentenceToFlashcardResponse:
+        pass
 
     @abstractmethod
     def search_word(self, search_string) -> AddFlashcardResponse:
@@ -20,4 +21,9 @@ class IService(ABC):
 
     @abstractmethod
     def search_and_add(self, search_string, nlp) -> SearchAndAddResponse:
+        pass
+
+    # TODO: get rid/replace, probably want something filtered, paginated and sorted
+    @abstractmethod
+    def get_all_flashcards(self):
         pass

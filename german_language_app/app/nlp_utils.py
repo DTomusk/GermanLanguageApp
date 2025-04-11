@@ -5,5 +5,5 @@ _nlp = None
 def get_nlp():
     global _nlp
     if _nlp is None:
-        _nlp = stanza.Pipeline('de', processors='tokenize,pos,lemma')
+        _nlp = stanza.Pipeline('de', processors='tokenize,pos,lemma,depparse')
     return _nlp

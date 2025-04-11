@@ -1,7 +1,6 @@
 from typing import Annotated
 from pydantic import BaseModel, StringConstraints
 
-# Move inputs somewhere else
 class SentenceInput(BaseModel):
     text: Annotated[str, StringConstraints(
         strip_whitespace=True, 

@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
+from app.models.inputs import SentenceInput
 from app.services.service import Service
 from app.db_access.reader import Reader
 from app.db_access.writer import Writer
@@ -49,3 +50,27 @@ def add_flashcard(lemma_id: int):
         content={"message": result.message},
         status_code=400
    )
+
+@router.post("/add_sentence_to_flashcard/{card_id}", include_in_schema=True)
+def add_sentence_to_flashcard(card_id: int, sentence: SentenceInput):
+    print("Adding sentence to flashcard")
+    nlp = app.nlp_utils.get_nlp()
+    result = service.add_sentence_to_flashcard(card_id, sentence, nlp)
+    if result.isSuccess:
+        return JSONResponse(
+            content={"data": [asdict(word) for word in result.words], "message": result.message},
+            status_code=200
+        )
+    return JSONResponse(
+        content={"message": result.message},
+        status_code=400
+    )
+
+@router.get("/flashcard", include_in_schema=True)
+def get_flashcards():
+    flashcards = service.get_all_flashcards()
+    flashcard_dict = [asdict(card) for card in flashcards]
+    return JSONResponse(
+        content={"data": flashcard_dict},
+        status_code=200
+    )
