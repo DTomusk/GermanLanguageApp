@@ -62,9 +62,15 @@ class Service(IService):
         if len(doc.sentences) > 1:
             return AddSentenceToFlashcardResponse(False, doc=None, message="Only one sentence is allowed")
 
-        word_data = self.convert_sentence_to_words(doc.sentences[0])
+        doc_sentence = doc.sentences[0]
+
+        word_data = self.convert_sentence_to_words(doc_sentence)
         print(f"Word data: {word_data}")
-        self.writer.add_sentence_to_flashcard(card_id, doc.sentences[0].text)
+
+        if not any(word.lemma == lemma.lemma for word in word_data):
+            return AddSentenceToFlashcardResponse(False, [], message="Lemma not found in sentence")
+
+        self.writer.add_sentence_to_flashcard(card_id, doc_sentence.text)
         return AddSentenceToFlashcardResponse(True, word_data, message="Sentence added to flashcard")
         # check lemma is present in sentence 
         # if not, return failure object with a message saying the lemma was not used
@@ -87,3 +93,9 @@ class Service(IService):
         if sentences:
             return sentences
         return None
+    
+    # TODO: add stuff like spaced repetition SM2
+    def get_practice_session(self, count: int):
+        flashcards = self.reader.get_flashcards(count)
+        if flashcards:
+            return flashcards

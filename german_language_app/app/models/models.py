@@ -9,3 +9,4 @@ class Lemma:
 class Flashcard:
     id: int
     lemma_id: int
+    lemma: str

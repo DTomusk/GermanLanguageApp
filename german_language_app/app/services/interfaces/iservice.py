@@ -31,3 +31,7 @@ class IService(ABC):
     @abstractmethod
     def get_flashcard_sentences(self, card_id: int):
         pass
+
+    @abstractmethod
+    def get_practice_session(self, count: int):
+        pass

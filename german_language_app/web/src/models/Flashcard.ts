@@ -1,4 +1,5 @@
 export type Flashcard = {
     id: number;
-    word: string;
+    lemma_id: number;
+    lemma: string;
 };

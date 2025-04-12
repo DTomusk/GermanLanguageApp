@@ -26,3 +26,7 @@ class IReader(ABC):
     @abstractmethod
     def get_flashcard_sentences(self, card_id: int) -> List[str]:
         pass
+
+    @abstractmethod
+    def get_flashcards(self, count: int) -> List[Flashcard]:
+        pass

@@ -53,7 +53,6 @@ def add_flashcard(lemma_id: int):
 
 @router.post("/add_sentence_to_flashcard/{card_id}", include_in_schema=True)
 def add_sentence_to_flashcard(card_id: int, sentence: SentenceInput):
-    print("Adding sentence to flashcard")
     nlp = app.nlp_utils.get_nlp()
     result = service.add_sentence_to_flashcard(card_id, sentence, nlp)
     if result.isSuccess:
@@ -77,7 +76,6 @@ def get_flashcards():
 
 @router.get("/flashcard/{card_id}/sentences", include_in_schema=True)  
 def get_flashcard_sentences(card_id: int):
-    print(f"Getting sentences for flashcard with ID: {card_id}")
     sentences = service.get_flashcard_sentences(card_id)
     if sentences:
         return JSONResponse(
@@ -87,4 +85,14 @@ def get_flashcard_sentences(card_id: int):
     return JSONResponse(
         content={"message": "No sentences found for this flashcard"},
         status_code=404
+    )
+
+# TODO: eventually we might want user preferences for how long practice sessions are
+@router.get("/flashcard/session/{number_of_cards}", include_in_schema=True)
+def get_practice_session(number_of_cards: int):
+    flashcards = service.get_practice_session(number_of_cards)
+    flashcard_dict = [asdict(card) for card in flashcards]
+    return JSONResponse(
+        content={"data": flashcard_dict},
+        status_code=200
     )

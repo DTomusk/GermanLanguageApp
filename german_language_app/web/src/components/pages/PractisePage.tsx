@@ -8,6 +8,8 @@ import FormFieldLarge from "../molecules/FormFieldLarge";
 import PageLink from "../molecules/PageLink";
 import BackButton from "../atoms/BackButton";
 import Row from "../molecules/Row";
+import Banner from "../organisms/Banner";
+import { isAxiosError } from "axios";
 
 function PractisePage() {
     const [sessionStarted, setSessionStarted] = useState(false);
@@ -16,12 +18,15 @@ function PractisePage() {
 
     const [sentence, setSentence] = useState<string>("");
     const [error, setError] = useState("");
-    const [flashcards, setFlashcards] = useState<Flashcard[] | null>(null);
+    const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
     const [currentFlashcard, setCurrentFlashcard] = useState<Flashcard | null>(null);
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
-    const [sentenceValid, setSentenceValid] = useState(false);
+    const [sentenceValidityErrors, setSentenceValidityErrors] = useState<{valid: boolean, errors: string[]}>({valid: false, errors: []});
     const [index, setIndex] = useState(0);
+    const [successMessage, setSuccessMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const [wordData, setWordData] = useState<{text: string, lemma: string, pos: string, feats: string, dependencyRelation: string, head: number}[]>([])
 
     const startSession = () => {
         setSessionStarted(true);
@@ -32,7 +37,7 @@ function PractisePage() {
         setError("");
         setSentence(updatedSentence);
         validateSentence(updatedSentence);
-        setSubmitted(false);
+        setErrorMessage("");
     }
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
@@ -41,41 +46,41 @@ function PractisePage() {
         setSubmitted(true);
         e.preventDefault();
 
-        // TODO: add sentence validation (e.g. contains the word)
         try {
-            await API.post(`/flashcards/${currentFlashcard?.id}`,
+            const response = await API.post(`/add_sentence_to_flashcard/${currentFlashcard?.id}`,
             { text: sentence },
             {
                 headers: {
                     "Content-Type": "application/json"
                 }
             });
-            // TODO: only do this on success
-            // Otherwise provide feedback to user
             setSentence("");
-            setIndex(index + 1);
-
-            if (index === numberOfCards - 1) {
-                setSessionEnded(true);
-                return;
+            setSuccessMessage(response.data.message);
+            setWordData(response.data.data);
+        } catch (error) {
+            if (isAxiosError(error)) {
+                if (error.response) {
+                    setErrorMessage(error.response.data.message);
+                }
             }
-
-            setCurrentFlashcard(flashcards![index + 1]);
-        } catch (error) {}
+        }
 
         setLoading(false);
     }
 
     const validateSentence = (updatedSentence: string) => {
+        setSentenceValidityErrors({valid: true, errors: []});
+        const errors = [] as string[];
         if (updatedSentence.trim() === "") {
-            setSentenceValid(false);
-            return;
+            errors.push("Please enter a sentence");
         }
-        if (updatedSentence.includes(currentFlashcard?.word || "")) {
-            setSentenceValid(true);
-            return;
+        const sentences = updatedSentence.split(".");
+        if (sentences.length > 1 && sentences[1].trim() !== "") {
+            errors.push("Must only have one sentence");
         }
-        setSentenceValid(false);
+        if (errors.length > 0) {
+            setSentenceValidityErrors({valid: false, errors: errors});
+        }
     }
 
     // TODO: below assumes we have flashcards, add error handling
@@ -83,13 +88,39 @@ function PractisePage() {
     // Could add: nothing to practise, or something like that
     // TODO: add loading so we don't show "undefined"
     useEffect(() => {
-        API.get("/flashcards")
+        API.get(`/flashcard/session/${numberOfCards}`)
         .then(response => {
-            setFlashcards(response.data);
+            setFlashcards(response.data.data);
             setIndex(0);
-            setCurrentFlashcard(response.data[index]);
+            setCurrentFlashcard(response.data.data[index]);
         })
     }, []);
+
+    const handleSuccessClose = () => {
+        setSuccessMessage("");
+    }
+
+    const handleErrorClose = () => {
+        setErrorMessage("");
+        setSubmitted(false);
+        setSentenceValidityErrors({valid: false, errors: []});
+    }
+
+    const goToNextFlashcard = () => {
+        if (index === numberOfCards - 1) {
+            setSessionEnded(true);
+            return;
+        }
+
+        const nextIndex = index + 1;
+        setIndex(nextIndex);
+        setCurrentFlashcard(flashcards[nextIndex]);
+        setWordData([]);
+        setSubmitted(false);
+        setSentence("");
+        setSentenceValidityErrors({valid: false, errors: []});
+        setSuccessMessage("");
+    }
 
     return (
     <ContentTemplate>
@@ -100,18 +131,41 @@ function PractisePage() {
             footer={<Button label="Start Session" onClick={startSession}></Button>}>
         </Card>}
         {sessionStarted && !sessionEnded && 
+        <>
+        {successMessage && <Banner type="success" message={successMessage} onClose={handleSuccessClose}></Banner>}
+        {errorMessage && <Banner type="error" message={errorMessage} onClose={handleErrorClose}></Banner>}
         <Card above={
             <Row>
                 <BackButton backLink="/" label="Home"></BackButton>
                 <div>{index + 1} / {numberOfCards}</div>
             </Row>}
-            cardTitle={`Write a sentence using: ${currentFlashcard?.word}`} 
+            cardTitle={`Write a sentence using: ${currentFlashcard?.lemma}`} 
             body={<>
                 <FormFieldLarge label="Sentence:" value={sentence} onChange={handleInputChange} error={error}></FormFieldLarge>
                 <p>The sentence must contain the given word </p>
+                {sentenceValidityErrors.errors.length > 0 &&
+                <ul>
+                    {sentenceValidityErrors.errors.map((error, index) => (
+                        <li key={index}>{error}</li>
+                    ))}
+                </ul>}
+                {wordData.length > 0 &&
+                <ul>
+                    {wordData.map((word, index) => (
+                        <li key={index}>
+                            <p>{word.text} ({word.lemma})</p>
+                            <p>POS: {word.pos}</p>
+                            <p>Feats: {word.feats}</p>
+                            <p>Dependency Relation: {word.dependencyRelation}</p>
+                            <p>Head: {word.head}</p>
+                        </li>
+                ))}
+                </ul>}
+                <button onClick={goToNextFlashcard} disabled={successMessage == ""}>Next</button>
             </>}
-            footer={<Button label="Submit" onClick={handleSubmit} disabled={loading || submitted || !sentenceValid}></Button>}>
-        </Card>}
+            footer={<Button label="Submit" onClick={handleSubmit} disabled={loading || submitted || !sentenceValidityErrors.valid}></Button>}>
+        </Card>
+        </>}
         {sessionEnded && 
         <Card cardTitle="Summary"
             body={<p>Well done for completing the session!</p>}
