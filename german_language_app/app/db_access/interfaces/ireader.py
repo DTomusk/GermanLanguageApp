@@ -22,3 +22,7 @@ class IReader(ABC):
     @abstractmethod
     def get_lemma_for_flashcard(self, card_id: int) -> Lemma:
         pass
+
+    @abstractmethod
+    def get_flashcard_sentences(self, card_id: int) -> List[str]:
+        pass

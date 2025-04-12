@@ -24,6 +24,16 @@ sentence_table = Table(
     "sentence",
     metadata_obj,
     Column("id", Integer, primary_key=True),
-    Column("text", String(500), index=True),
-    Column("flashcard_id", Integer, ForeignKey("flashcard.id"))
+    Column("text", String(500)),
+    Column("flashcard_id", Integer, ForeignKey("flashcard.id"), index=True),
+)
+
+word_table = Table(
+    "word",
+    metadata_obj,
+    Column("id", Integer, primary_key=True),
+    Column("text", String(100), index=True),
+    Column("lemma_id", Integer, ForeignKey("lemma.id")),
+    Column("pos", String(10), index=True),
+    Column("feats", String(100))
 )

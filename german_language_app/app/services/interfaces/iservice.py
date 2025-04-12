@@ -27,3 +27,7 @@ class IService(ABC):
     @abstractmethod
     def get_all_flashcards(self):
         pass
+
+    @abstractmethod
+    def get_flashcard_sentences(self, card_id: int):
+        pass

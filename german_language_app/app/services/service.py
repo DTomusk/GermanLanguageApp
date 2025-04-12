@@ -7,7 +7,7 @@ from app.db_access.interfaces.ireader import IReader
 from app.db_access.interfaces.iwriter import IWriter
 from app.models.responses import AddSentenceToFlashcardResponse, SearchAndAddResponse, AddFlashcardResponse, WordResponse
 from rapidfuzz import process
-from stanza.models.common.doc import Document, Sentence, Word
+from stanza.models.common.doc import Document, Sentence
 
 class Service(IService):
     def __init__(self, reader: IReader, writer: IWriter):
@@ -54,16 +54,17 @@ class Service(IService):
         return SearchAndAddResponse(False, None, "Unknown error occurred adding lemma")
             
     def add_sentence_to_flashcard(self, card_id: int, sentence: SentenceInput, nlp) -> AddSentenceToFlashcardResponse:
-        # Get lemma of card
         lemma = self.reader.get_lemma_for_flashcard(card_id)
         if lemma is None:
             return AddSentenceToFlashcardResponse(False, doc=None, message="Flashcard not found")
-        print(f"Adding sentence to flashcard for lemma: {lemma.lemma}")
-        # lemmatise sentence 
         doc: Document = nlp(sentence.text)
-        print(f"Doc: {doc}")
+        
+        if len(doc.sentences) > 1:
+            return AddSentenceToFlashcardResponse(False, doc=None, message="Only one sentence is allowed")
+
         word_data = self.convert_sentence_to_words(doc.sentences[0])
         print(f"Word data: {word_data}")
+        self.writer.add_sentence_to_flashcard(card_id, doc.sentences[0].text)
         return AddSentenceToFlashcardResponse(True, word_data, message="Sentence added to flashcard")
         # check lemma is present in sentence 
         # if not, return failure object with a message saying the lemma was not used
@@ -77,6 +78,12 @@ class Service(IService):
         print(f"Converting sentence to words: {sentence.text}")
         words_data = []
         for word in sentence.words:
-            word_info = WordResponse(word.lemma, word.upos, word.feats, word.deprel, word.head)
+            word_info = WordResponse(word.text, word.lemma, word.upos, word.feats, word.deprel, word.head)
             words_data.append(word_info)
         return words_data
+
+    def get_flashcard_sentences(self, card_id: int):
+        sentences = self.reader.get_flashcard_sentences(card_id)
+        if sentences:
+            return sentences
+        return None

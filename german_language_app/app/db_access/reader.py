@@ -2,7 +2,7 @@ from sqlalchemy import select
 from typing import List
 from app.models.models import Flashcard, Lemma
 from app.db_access.interfaces.ireader import IReader
-from app.db_access.db_models import flashcard_table, lemma_table
+from app.db_access.db_models import flashcard_table, lemma_table, sentence_table
 from app.db_access.database import engine
 
 class Reader(IReader):
@@ -43,3 +43,10 @@ class Reader(IReader):
             if row:
                 return Lemma(id=row.id, lemma=row.lemma)
             return None
+
+    def get_flashcard_sentences(self, card_id: int) -> List[str]:
+        with engine.begin() as conn:
+            stmt = select(sentence_table).where(sentence_table.c.flashcard_id == card_id)
+            result = conn.execute(stmt)
+            return [row.text for row in result.fetchall()]
+

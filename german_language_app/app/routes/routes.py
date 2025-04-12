@@ -74,3 +74,17 @@ def get_flashcards():
         content={"data": flashcard_dict},
         status_code=200
     )
+
+@router.get("/flashcard/{card_id}/sentences", include_in_schema=True)  
+def get_flashcard_sentences(card_id: int):
+    print(f"Getting sentences for flashcard with ID: {card_id}")
+    sentences = service.get_flashcard_sentences(card_id)
+    if sentences:
+        return JSONResponse(
+            content={"data": sentences},
+            status_code=200
+        )
+    return JSONResponse(
+        content={"message": "No sentences found for this flashcard"},
+        status_code=404
+    )
