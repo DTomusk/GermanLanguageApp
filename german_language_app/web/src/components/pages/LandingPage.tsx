@@ -1,7 +1,6 @@
 import Button from "../atoms/Button"
 import Card from "../organisms/Card"
 import { ChangeEvent, useState } from "react";
-import Banner from "../organisms/Banner";
 import API from "../../api/api";
 import ContentTemplate from "../templates/ContentTemplate";
 import PageLink from "../molecules/PageLink";
@@ -9,29 +8,35 @@ import SearchBox from "../organisms/SearchBox";
 import { Lemma } from "../../models/Lemma";
 import LoadingIcon from "../atoms/LoadingIcon";
 import InputError from "../atoms/InputError";
+import BannerManager from "../organisms/BannerManager";
+import { useBanner } from "../../hooks/UseBanner";
 
-// todo: we need to submit a lemma id 
-// search words should be lemmas 
-// if the user searches for a word for which there isn't a lemma
-// the lemma needs to be added to the database and the id returned
 function LandingPage() {
     const [word, setWord] = useState<string>("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
-    const [successMessage, setSuccessMessage] = useState("");
     const [submitted, setSubmitted] = useState(false);
     const [searchWords, setSearchWords] = useState<Lemma[]>([]);
     const [selectedLemma, setSelectedLemma] = useState<Lemma | null>(null);
     const [searchDisabled, setSearchDisabled] = useState(false);
     const [invalidMessage, setInvalidMessage] = useState("");
 
+    const {
+        successMessage, 
+        errorMessage,
+        showSuccessBanner,
+        showErrorBanner,
+        hideSuccessBanner,
+        hideErrorBanner
+    } = useBanner();
+
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         var currentWord = e.target.value;
         
-        setError("");
+        hideErrorBanner();
+        hideSuccessBanner();
+
         setWord(currentWord);
         setSubmitted(false);
-        setSuccessMessage("");
         setSelectedLemma(null);
         if (currentWord.length === 0) {
             setSearchWords([]);
@@ -55,13 +60,13 @@ function LandingPage() {
     }
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
-        setError("");
+        hideErrorBanner();
         setLoading(true);
         setSubmitted(true);
         e.preventDefault();
 
         if (word.trim() === "") {
-            setError("Input cannot be empty");
+            showErrorBanner("Input cannot be empty");
             setLoading(false);
             return;
         }
@@ -73,22 +78,14 @@ function LandingPage() {
                     "Content-Type": "application/json"
                 }
             });
-            setSuccessMessage(response.data.message);
+            showSuccessBanner(response.data.message);
         } catch (error) {
             console.error("Error posting word for flashcard:", error);
-            setError("Error: couldn't create flashcard");
+            showErrorBanner("Error: couldn't create flashcard");
         }
 
         setLoading(false);
     };
-
-    const handleSuccessClose = () => {
-        setSuccessMessage("");
-    }
-
-    const handleErrorClose = () => {
-        setError("");
-    }
 
     const searchWord = async (word: string) => {
         try {
@@ -104,7 +101,7 @@ function LandingPage() {
     const handleSelect = (id: number) => {
         const lemma = searchWords.find(lemma => lemma.id === id);
         if (!lemma) {
-            setError("Word not found");
+            showErrorBanner("Word not found");
             return;
         }
         setSelectedLemma(lemma);
@@ -112,7 +109,7 @@ function LandingPage() {
         setWord(lemma.lemma);
         setSearchWords([]);
         setSubmitted(false);
-        setSuccessMessage("");
+        hideSuccessBanner();
     }
 
     const handleSearch = async (e: { preventDefault: () => void; }) => {
@@ -133,8 +130,12 @@ function LandingPage() {
 
     return (
         <ContentTemplate>
-            {successMessage && <Banner type="success" message={successMessage} onClose={handleSuccessClose}></Banner>}
-            {error && <Banner type="error" message={error} onClose={handleErrorClose}></Banner>}
+            <BannerManager 
+                successMessage={successMessage}
+                errorMessage={errorMessage}
+                onSuccessClose={hideSuccessBanner}
+                onErrorClose={hideErrorBanner}
+                />
             <Card cardTitle="Create a new Flashcard" 
                 body={
                     <>

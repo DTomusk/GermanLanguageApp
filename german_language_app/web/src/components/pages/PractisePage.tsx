@@ -8,8 +8,9 @@ import FormFieldLarge from "../molecules/FormFieldLarge";
 import PageLink from "../molecules/PageLink";
 import BackButton from "../atoms/BackButton";
 import Row from "../molecules/Row";
-import Banner from "../organisms/Banner";
 import { isAxiosError } from "axios";
+import { useBanner } from "../../hooks/UseBanner";
+import BannerManager from "../organisms/BannerManager";
 
 function PractisePage() {
     const [sessionStarted, setSessionStarted] = useState(false);
@@ -24,9 +25,16 @@ function PractisePage() {
     const [submitted, setSubmitted] = useState(false);
     const [sentenceValidityErrors, setSentenceValidityErrors] = useState<{valid: boolean, errors: string[]}>({valid: false, errors: []});
     const [index, setIndex] = useState(0);
-    const [successMessage, setSuccessMessage] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
     const [wordData, setWordData] = useState<{text: string, lemma: string, pos: string, feats: string, dependencyRelation: string, head: number}[]>([])
+
+    const {
+            successMessage, 
+            errorMessage,
+            showSuccessBanner,
+            showErrorBanner,
+            hideSuccessBanner,
+            hideErrorBanner
+        } = useBanner();
 
     const startSession = () => {
         setSessionStarted(true);
@@ -37,7 +45,7 @@ function PractisePage() {
         setError("");
         setSentence(updatedSentence);
         validateSentence(updatedSentence);
-        setErrorMessage("");
+        hideErrorBanner();
     }
 
     const handleSubmit = async (e: { preventDefault: () => void; }) => {
@@ -55,12 +63,12 @@ function PractisePage() {
                 }
             });
             setSentence("");
-            setSuccessMessage(response.data.message);
+            showSuccessBanner(response.data.message);
             setWordData(response.data.data);
         } catch (error) {
             if (isAxiosError(error)) {
                 if (error.response) {
-                    setErrorMessage(error.response.data.message);
+                    showErrorBanner(error.response.data.message);
                 }
             }
         }
@@ -97,11 +105,11 @@ function PractisePage() {
     }, []);
 
     const handleSuccessClose = () => {
-        setSuccessMessage("");
+        hideSuccessBanner();
     }
 
     const handleErrorClose = () => {
-        setErrorMessage("");
+        hideErrorBanner();
         setSubmitted(false);
         setSentenceValidityErrors({valid: false, errors: []});
     }
@@ -119,7 +127,7 @@ function PractisePage() {
         setSubmitted(false);
         setSentence("");
         setSentenceValidityErrors({valid: false, errors: []});
-        setSuccessMessage("");
+        hideSuccessBanner();
     }
 
     return (
@@ -132,8 +140,12 @@ function PractisePage() {
         </Card>}
         {sessionStarted && !sessionEnded && 
         <>
-        {successMessage && <Banner type="success" message={successMessage} onClose={handleSuccessClose}></Banner>}
-        {errorMessage && <Banner type="error" message={errorMessage} onClose={handleErrorClose}></Banner>}
+        <BannerManager
+            successMessage={successMessage}
+            errorMessage={errorMessage}
+            onSuccessClose={handleSuccessClose}
+            onErrorClose={handleErrorClose}    
+        />
         <Card above={
             <Row>
                 <BackButton backLink="/" label="Home"></BackButton>
