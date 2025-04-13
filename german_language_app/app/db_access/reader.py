@@ -6,12 +6,6 @@ from app.db_access.db_models import flashcard_table, lemma_table, sentence_table
 from app.db_access.database import engine
 
 class Reader(IReader):
-    def get_all_lemmas(self) -> List[Lemma]:
-        stmt = select(lemma_table)
-        with engine.begin() as conn:
-            result = conn.execute(stmt)
-            return [Lemma(id=row.id, lemma=row.lemma) for row in result.fetchall()]
-        
     def get_all_flashcards(self) -> List[Flashcard]:
         stmt = select(flashcard_table.c.id, flashcard_table.c.lemma_id, lemma_table.c.lemma).select_from(
                 join(flashcard_table, lemma_table, flashcard_table.c.lemma_id == lemma_table.c.id)
@@ -25,15 +19,6 @@ class Reader(IReader):
             stmt = select(flashcard_table).where(flashcard_table.c.lemma_id == lemma_id).limit(1)
             result = conn.execute(stmt)
             return result.fetchone()
-        
-    def get_lemma(self, lemma: str) -> Lemma:
-        with engine.begin() as conn:
-            stmt = select(lemma_table).where(lemma_table.c.lemma == lemma).limit(1)
-            result = conn.execute(stmt)
-            row = result.fetchone()
-            if row:
-                return Lemma(id=row.id, lemma=row.lemma)
-            return None
         
     def get_lemma_for_flashcard(self, card_id: int) -> Lemma:
         print("Getting lemma for flashcard with ID: ", card_id)

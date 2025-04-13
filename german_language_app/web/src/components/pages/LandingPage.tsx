@@ -51,6 +51,10 @@ function LandingPage() {
 
     const validateWord = (word: string) => {
         const checkWord = word.trim();
+        if (checkWord.length < 2) {
+            setInvalidMessage("Word must be at least 2 characters long");
+            return false;
+        }
         if (checkWord.split(" ").length > 1) {
             setInvalidMessage("Please enter a single word");
             return false;
@@ -65,12 +69,6 @@ function LandingPage() {
         setSubmitted(true);
         e.preventDefault();
 
-        if (word.trim() === "") {
-            showErrorBanner("Input cannot be empty");
-            setLoading(false);
-            return;
-        }
-
         try {
             var response = await API.post(`/add_flashcard/${selectedLemma?.id}`, 
             {
@@ -82,19 +80,21 @@ function LandingPage() {
         } catch (error) {
             console.error("Error posting word for flashcard:", error);
             showErrorBanner("Error: couldn't create flashcard");
+        } finally {
+            setLoading(false);
         }
-
-        setLoading(false);
     };
 
     const searchWord = async (word: string) => {
+        setLoading(true);
         try {
             var response = await(API.get(`/search/${word}`));
-
             setSearchWords(response.data.data);
             
         } catch (error) {
 
+        } finally {
+            setLoading(false);
         }
     }
 

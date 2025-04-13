@@ -5,12 +5,7 @@ metadata_obj = MetaData()
 
 # Hopefully lemmas won't ever be longer than 100 characters
 # but with German you never know
-lemma_table = Table(
-    "lemma",
-    metadata_obj,
-    Column("id", Integer, primary_key=True),
-    Column("lemma", String(100), index=True)
-)
+
 
 flashcard_table = Table(
     "flashcard",
