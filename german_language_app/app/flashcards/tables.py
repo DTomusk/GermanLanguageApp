@@ -1,11 +1,5 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Table, MetaData
-
-# these are database tables, do they belong in models?
-metadata_obj = MetaData()
-
-# Hopefully lemmas won't ever be longer than 100 characters
-# but with German you never know
-
+from sqlalchemy import Column, ForeignKey, Integer, String, Table
+from app.database import metadata_obj
 
 flashcard_table = Table(
     "flashcard",

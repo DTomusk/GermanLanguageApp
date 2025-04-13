@@ -1,12 +1,36 @@
-# dependencies are growing, consider splitting into different services 
-# what would the services be? 
+from abc import ABC, abstractmethod
 from typing import List
+
+from app.flashcards.reader import IReader
+from app.flashcards.writer import IWriter
 from app.models.inputs import SentenceInput
-from app.services.interfaces.iservice import IService
-from app.db_access.interfaces.ireader import IReader
-from app.db_access.interfaces.iwriter import IWriter
-from app.models.responses import AddSentenceToFlashcardResponse, AddFlashcardResponse, WordResponse
+from app.models.responses import AddFlashcardResponse, AddSentenceToFlashcardResponse, WordResponse
 from stanza.models.common.doc import Document, Sentence
+
+class IService(ABC):
+    @abstractmethod
+    def add_flashcard(self, lemma_id) -> AddFlashcardResponse:
+        pass
+    
+    @abstractmethod            
+    def add_sentence_to_flashcard(self, card_id: int, sentence: SentenceInput, nlp) -> AddSentenceToFlashcardResponse:
+        pass
+
+    @abstractmethod
+    def get_all_flashcards(self):
+        pass
+    
+    @abstractmethod
+    def convert_sentence_to_words(self, sentence: Sentence) -> List[WordResponse]:
+        pass
+
+    @abstractmethod
+    def get_flashcard_sentences(self, card_id: int):
+        pass
+    
+    @abstractmethod
+    def get_practice_session(self, count: int):
+        pass
 
 class Service(IService):
     def __init__(self, reader: IReader, writer: IWriter):

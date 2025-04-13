@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from app.services.service import Service
-from app.db_access.reader import Reader
-from app.db_access.writer import Writer
 from dataclasses import asdict
+from app.lemmas.reader import Reader
+from app.lemmas.service import Service
+from app.lemmas.writer import Writer
 import app.nlp_utils
 
 lemma_router = APIRouter(prefix="/lemmas")

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 from sqlalchemy import select
-from app.db_access.database import engine
+from app.database import engine
 
 from app.models.models import Lemma
 from app.lemmas.tables import lemma_table

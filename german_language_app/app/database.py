@@ -1,6 +1,8 @@
-from sqlalchemy import create_engine
+from sqlalchemy import MetaData, create_engine
 import os
 from dotenv import load_dotenv
+
+metadata_obj = MetaData()
 
 load_dotenv()
 

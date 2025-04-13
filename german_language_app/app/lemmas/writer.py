@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from sqlalchemy import func, insert, select
 from app.models.models import Lemma
-from app.db_access.database import engine
+from app.database import engine
 from app.lemmas.tables import lemma_table
 
 class IWriter(ABC):

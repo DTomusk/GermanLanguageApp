@@ -1,11 +1,13 @@
+from dataclasses import asdict
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
+
+from app.flashcards.reader import Reader
+from app.flashcards.service import Service
+from app.flashcards.writer import Writer
 from app.models.inputs import SentenceInput
-from app.services.service import Service
-from app.db_access.reader import Reader
-from app.db_access.writer import Writer
-from dataclasses import asdict
-import app.nlp_utils
+from app.nlp_utils import get_nlp
+
 
 flashcard_router = APIRouter(prefix="/flashcards")
 service = Service(Reader(), Writer())
@@ -47,7 +49,7 @@ def get_flashcard_sentences(card_id: int):
 
 @flashcard_router.post("/{card_id}/sentence", include_in_schema=True)
 def add_sentence_to_flashcard(card_id: int, sentence: SentenceInput):
-    nlp = app.nlp_utils.get_nlp()
+    nlp = get_nlp()
     result = service.add_sentence_to_flashcard(card_id, sentence, nlp)
     if result.isSuccess:
         return JSONResponse(
