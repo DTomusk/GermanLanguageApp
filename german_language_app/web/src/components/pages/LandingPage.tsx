@@ -84,7 +84,7 @@ function LandingPage() {
     const searchWord = async (word: string) => {
         setLoading(true);
         try {
-            const response = await searchAndAddWord(word);
+            const response = await findClosest(word);
             setSearchWords(response.data.data);
         } catch (error) {
 
@@ -112,7 +112,7 @@ function LandingPage() {
         setSearchDisabled(true);
 
         try {
-            const response = await findClosest(word);
+            const response = await searchAndAddWord(word);
             
             setSelectedLemma(response.data.data);
             setWord(response.data.data.lemma);
