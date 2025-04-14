@@ -11,6 +11,7 @@ import Row from "../molecules/Row";
 import { isAxiosError } from "axios";
 import { useBanner } from "../../hooks/UseBanner";
 import BannerManager from "../organisms/BannerManager";
+import { addSentenceToFlashcard } from "../../api/FlashcardService";
 
 function PractisePage() {
     const [sessionStarted, setSessionStarted] = useState(false);
@@ -55,13 +56,7 @@ function PractisePage() {
         e.preventDefault();
 
         try {
-            const response = await API.post(`/add_sentence_to_flashcard/${currentFlashcard?.id}`,
-            { text: sentence },
-            {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
+            const response = await addSentenceToFlashcard(currentFlashcard?.id as number, sentence);
             setSentence("");
             showSuccessBanner(response.data.message);
             setWordData(response.data.data);
@@ -96,12 +91,19 @@ function PractisePage() {
     // Could add: nothing to practise, or something like that
     // TODO: add loading so we don't show "undefined"
     useEffect(() => {
-        API.get(`/flashcard/session/${numberOfCards}`)
-        .then(response => {
-            setFlashcards(response.data.data);
-            setIndex(0);
-            setCurrentFlashcard(response.data.data[index]);
-        })
+        const fetchFlashcards = async () => {
+            try {
+                const response = await API.get(`/flashcard/session/${numberOfCards}`);
+        
+                setFlashcards(response.data.data);
+                setIndex(0);
+                setCurrentFlashcard(response.data.data[index]);
+            } catch (error) {
+                console.error("Error fetching flashcards:", error);
+            } 
+        };
+
+        fetchFlashcards();
     }, []);
 
     const handleSuccessClose = () => {

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from app.routes.routes import router
+from app.routes import router
 #from app.seeds import seed_database
 #from app.nlp_utils import nlp
 import logging

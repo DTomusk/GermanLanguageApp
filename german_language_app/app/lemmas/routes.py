@@ -13,6 +13,15 @@ service = Service(Reader(), Writer())
 # needs to return lemmas along with db ids
 @lemma_router.get("/find_closest/{search_string}", include_in_schema=True)
 def search_words(search_string: str):
+    """
+    Search for the lemmas in the database that are closest to the given string.
+
+    Args:
+        search_string (str): The string to search for.
+
+    Returns:
+        JSONResponse: A JSON response containing the closest lemmas and their database IDs.
+    """
     lemmas = service.search_word(search_string, 5)
     lemma_dict = [asdict(lemma) for lemma in lemmas]
     return JSONResponse(
@@ -22,9 +31,15 @@ def search_words(search_string: str):
 
 @lemma_router.get("/search_and_add/{search_string}/", include_in_schema=True)
 def search_and_add(search_string: str):
-    # take a string and lemmatise 
-    # if the lemma is not in the database, add it
-    # if the pos is X or PROPN, then return some kind of error 
+    """
+    Search for the lemma of a word and if not found, add it to the database.
+
+    Args:
+        search_string (str): The string to lemmatise, search for and, if missing, add
+
+    Returns:
+        JSONResponse: A JSON response containing the lemma and a message indicating success or failure.
+    """
     nlp = app.nlp_utils.get_nlp()
     result = service.search_and_add(search_string, nlp)
     if result.isSuccess:

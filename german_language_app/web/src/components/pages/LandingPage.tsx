@@ -1,7 +1,6 @@
 import Button from "../atoms/Button"
 import Card from "../organisms/Card"
 import { ChangeEvent, useState } from "react";
-import API from "../../api/api";
 import ContentTemplate from "../templates/ContentTemplate";
 import PageLink from "../molecules/PageLink";
 import SearchBox from "../organisms/SearchBox";
@@ -10,6 +9,8 @@ import LoadingIcon from "../atoms/LoadingIcon";
 import InputError from "../atoms/InputError";
 import BannerManager from "../organisms/BannerManager";
 import { useBanner } from "../../hooks/UseBanner";
+import { findClosest, searchAndAddWord } from "../../api/LemmaService";
+import { addFlashcard } from "../../api/FlashcardService";
 
 function LandingPage() {
     const [word, setWord] = useState<string>("");
@@ -70,12 +71,7 @@ function LandingPage() {
         e.preventDefault();
 
         try {
-            var response = await API.post(`/add_flashcard/${selectedLemma?.id}`, 
-            {
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            });
+            var response = await addFlashcard(selectedLemma?.id as number);
             showSuccessBanner(response.data.message);
         } catch (error) {
             console.error("Error posting word for flashcard:", error);
@@ -88,9 +84,8 @@ function LandingPage() {
     const searchWord = async (word: string) => {
         setLoading(true);
         try {
-            var response = await(API.get(`/search/${word}`));
+            const response = await searchAndAddWord(word);
             setSearchWords(response.data.data);
-            
         } catch (error) {
 
         } finally {
@@ -117,13 +112,14 @@ function LandingPage() {
         setSearchDisabled(true);
 
         try {
-            await(API.get(`/search_and_add/${word}`))
-            .then((response) => {
-                setSelectedLemma(response.data.data);
-                setWord(response.data.data.lemma);
-            })
-        } catch (error) {}
-        finally {
+            const response = await findClosest(word);
+            
+            setSelectedLemma(response.data.data);
+            setWord(response.data.data.lemma);
+            
+        } catch (error) {
+
+        } finally {
             setSearchDisabled(false);
         }
     }

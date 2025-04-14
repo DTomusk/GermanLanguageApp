@@ -3,9 +3,9 @@ from logging.config import fileConfig
 from alembic import context
 
 from os import getenv
-from app.db_access.db_models import metadata_obj
+from app.database import metadata_obj
 from dotenv import load_dotenv
-from app.db_access.database import create_engine
+from app.database import create_engine
 
 load_dotenv()
 
